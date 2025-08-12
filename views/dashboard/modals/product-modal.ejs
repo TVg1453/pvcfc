@@ -1,0 +1,42 @@
+<!-- Modal product add/edit -->
+<div id="productModal" class="modal">
+  <div class="modal-content">
+    <h3 id="productModalTitle">Thêm sản phẩm</h3>
+    <form id="productForm" action="/products/save#products" method="POST">
+      <input type="hidden" name="oldMaSP" id="oldMaSP" />
+      <input
+        type="text"
+        name="MaSP"
+        id="MaSP"
+        placeholder="Mã sản phẩm"
+        required
+      />
+      <input
+        type="text"
+        name="TenSanPham"
+        id="TenSanPham"
+        placeholder="Tên sản phẩm"
+        required
+      />
+      <input type="number" name="Gia" id="Gia" placeholder="Giá" required />
+      <input
+        type="number"
+        name="SoLuong"
+        id="SoLuong"
+        placeholder="Số lượng"
+        required
+      />
+      <input
+        type="text"
+        name="DonVi"
+        id="DonVi"
+        placeholder="Đơn vị"
+        required
+      />
+      <div class="actions">
+        <button type="button" onclick="closeProductModal()">Hủy</button>
+        <button type="submit">Lưu</button>
+      </div>
+    </form>
+  </div>
+</div>

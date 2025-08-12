@@ -1,0 +1,259 @@
+<!-- Table Revenue Section -->
+<div class="table-container" id="revenue-section" style="display: none">
+  <div
+    class="chart-header"
+    style="display: flex; justify-content: space-between; align-items: center"
+  >
+    <h3>Doanh thu</h3>
+    <div class="revenue-control-groups">
+      <div class="revenue-group">
+        <button class="btn tab-btn btn-day" onclick="switchRevenueTab('day')">
+          Theo ngày
+        </button>
+        <button class="btn add-btn btn-day" onclick="openRevenueModalDay()">
+          + Thêm doanh thu theo ngày
+        </button>
+      </div>
+      <div class="revenue-group">
+        <button
+          class="btn tab-btn btn-product"
+          onclick="switchRevenueTab('product')"
+        >
+          Theo sản phẩm
+        </button>
+        <button
+          class="btn add-btn btn-product"
+          onclick="openRevenueModalProduct()"
+        >
+          + Thêm doanh thu theo sản phẩm
+        </button>
+      </div>
+      <div class="revenue-group">
+        <button
+          class="btn tab-btn btn-customer"
+          onclick="switchRevenueTab('customer')"
+        >
+          Theo khách hàng
+        </button>
+        <button
+          class="btn add-btn btn-customer"
+          onclick="openRevenueModalCustomer()"
+        >
+          + Thêm doanh thu theo khách hàng
+        </button>
+      </div>
+    </div>
+
+    <div class="revenue-search-bar">
+      <input
+        type="text"
+        id="revenueSearchInput"
+        placeholder="Tìm kiếm..."
+        oninput="filterRevenueTable()"
+      />
+    </div>
+  </div>
+
+  <!-- Table doanh thu theo ngày -->
+  <div class="table" id="revenue-day" class="revenue-tab">
+    <table>
+      <thead>
+        <tr>
+          <th>Ngày</th>
+          <th>Số đơn hàng</th>
+          <th>Doanh thu</th>
+          <th>Chi phí</th>
+          <th>Lợi nhuận</th>
+          <th>Ghi chú</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% revenuesByDay.forEach((item) => { %>
+        <tr>
+          <td>
+            <% if (item.ngay) { const parts = item.ngay.split("-"); if
+            (parts.length === 3) { %> <%= `${parts[2]}-${parts[1]}-${parts[0]}`
+            %> <% } else { %> Invalid Date <% }} else { %> Invalid Date <% } %>
+          </td>
+
+          <td><%= item.soDonHang %></td>
+          <td><%= item.doanhThu.toLocaleString() %>đ</td>
+          <td><%= item.chiPhi.toLocaleString() %>đ</td>
+          <td><%= item.loiNhuan.toLocaleString() %>đ</td>
+          <td><%= item.ghiChu %></td>
+          <td>
+            <button
+              class="btn btn-sm btn-primary"
+              onclick="openEditRevenueModal(
+                      '<%= item.ngay %>',
+                      '<%= item.soDonHang %>',
+                      '<%= item.doanhThu %>',
+                      '<%= item.chiPhi %>',
+                      '<%= item.loiNhuan %>',
+                      '<%= item.ghiChu %>'
+                    )"
+              title="Chỉnh sửa"
+            >
+              Chỉnh sửa
+            </button>
+            <form
+              action="/revenues/delete-day"
+              method="POST"
+              style="display: inline"
+            >
+              <% let ngaySubmit = item.ngay; if (item.ngay.includes("-")) {
+              const parts = item.ngay.split("-"); if (parts.length === 3) {
+              ngaySubmit = `${parts[2]}-${parts[1]}-${parts[0]}`; } } %>
+              <input type="hidden" name="ngay" value="<%= ngaySubmit %>" />
+              <button
+                class="btn btn-sm btn-danger"
+                onclick="return confirm('Xóa doanh thu ngày <%= item.ngay %>?')"
+                title="Xoá"
+              >
+                Xóa
+              </button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Table doanh thu theo sản phẩm -->
+  <div
+    class="table"
+    id="revenue-product"
+    class="revenue-tab"
+    style="display: none"
+  >
+    <table>
+      <thead>
+        <thead>
+          <tr>
+            <th>Mã sản phẩm</th>
+            <th>Tên sản phẩm</th>
+            <th>Số lượng bán</th>
+            <th>Đơn giá</th>
+            <th>Doanh thu</th>
+            <th>Ghi chú</th>
+          </tr>
+        </thead>
+      </thead>
+
+      <tbody>
+        <% revenuesByProduct.forEach((item) => { %>
+        <tr>
+          <td><%= item.maSanPham %></td>
+          <td><%= item.tenSanPham %></td>
+          <td><%= item.soLuongBan %></td>
+          <td><%= item.donGia ? item.donGia.toLocaleString() : "0" %>đ</td>
+          <td><%= item.doanhThu ? item.doanhThu.toLocaleString() : "0" %>đ</td>
+          <td><%= item.ghiChu %></td>
+          <td>
+            <button
+              class="btn btn-sm btn-primary"
+              onclick="openEditRevenueModalProduct(
+                      '<%= item.maSanPham %>',
+                      '<%= item.tenSanPham %>',
+                      '<%= item.soLuongBan %>',
+                      '<%= item.donGia %>',
+                      '<%= item.doanhThu %>',
+                      '<%= item.ghiChu %>'
+                    )"
+              title="Chỉnh sửa"
+            >
+              Chỉnh sửa
+            </button>
+            <form
+              action="/revenues/delete-product"
+              method="POST"
+              style="display: inline"
+            >
+              <input
+                type="hidden"
+                name="maSanPham"
+                value="<%= item.maSanPham %>"
+              />
+              <button
+                class="btn btn-sm btn-danger"
+                onclick="return confirm('Xóa doanh thu sản phẩm <%= item.maSanPham %>?')"
+                title="Xoá"
+              >
+                Xóa
+              </button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Table doanh thu theo khách hàng -->
+  <div
+    class="table"
+    id="revenue-customer"
+    class="revenue-tab"
+    style="display: none"
+  >
+    <table>
+      <thead>
+        <tr>
+          <th>Mã khách hàng</th>
+          <th>Tên khách hàng</th>
+          <th>Khu vực</th>
+          <th>Số đơn hàng</th>
+          <th>Tổng tiền</th>
+          <th>Ghi chú</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% revenuesByCustomer.forEach((item) => { %>
+        <tr>
+          <td><%= item.maKhachHang %></td>
+          <td><%= item.tenKhachHang %></td>
+          <td><%= item.khuVuc %></td>
+          <td><%= item.soDonHang %></td>
+          <td><%= item.tongTien ? item.tongTien.toLocaleString() : "0" %>đ</td>
+          <td><%= item.ghiChu %></td>
+          <td>
+            <button
+              class="btn btn-sm btn-primary"
+              onclick="openEditRevenueModalCustomer(
+                      '<%= item.maKhachHang %>',
+                      '<%= item.tenKhachHang %>',
+                      '<%= item.khuVuc %>',
+                      '<%= item.soDonHang %>',
+                      '<%= item.tongTien %>',
+                      '<%= item.ghiChu %>'
+                    )"
+              title="Chỉnh sửa"
+            >
+              Chỉnh sửa
+            </button>
+            <form
+              action="/revenues/delete-customer"
+              method="POST"
+              style="display: inline"
+            >
+              <input
+                type="hidden"
+                name="maKhachHang"
+                value="<%= item.maKhachHang %>"
+              />
+              <button
+                class="btn btn-sm btn-danger"
+                onclick="return confirm('Xóa doanh thu khách hàng <%= item.maKhachHang %>?')"
+                title="Xoá"
+              >
+                Xóa
+              </button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập - PVCFC</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/material-icons@1.13.12/iconfont/material-icons.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+
+    :root {
+      --mainColor: #32cd32;
+      --black: #000000;
+      --white: #ffffff;
+      --frostGreen: #228b22;
+      --whiteSmoke: #c4c3ca;
+      --shadow: 0px 4px 8px 0 rgba(21, 21, 21, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    ::before,
+    ::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Lato", sans-serif;
+      font-size: 16px;
+      letter-spacing: 1px;
+      font-weight: normal;
+      background-color: var(--black);
+      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)),
+        url("/images/anh-2.jpg") center/cover no-repeat;
+      color: var(--white);
+    }
+
+    a {
+      text-decoration: none;
+    }
+    ul {
+      list-style: none;
+    }
+    .container {
+      max-width: 1080px;
+      margin: auto;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .justify-content-between {
+      justify-content: space-between;
+    }
+    .align-items-center {
+      align-items: center;
+    }
+    .full-screen {
+      min-height: 100vh;
+      padding: 80px 0 0;
+    }
+    .text-center {
+      text-align: center;
+    }
+
+    /*NAV*/
+
+    nav {
+      width: 100%;
+      background: none;
+      position: fixed;
+      z-index: 999;
+      padding: 25px;
+    }
+
+    nav .logo {
+      color: var(--white);
+      font-size: 32px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    nav .logo span {
+      color: var(--mainColor);
+    }
+    nav .container {
+      padding: 0 25px;
+    }
+    nav .menu-btn i {
+      color: var(--white);
+      font-size: 28px;
+      cursor: pointer;
+      display: none;
+    }
+    nav ul {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    nav ul li {
+      margin: 0 5px;
+    }
+    nav ul li a {
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 600;
+      padding: 8px 15px;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+    nav ul li a.active,
+    nav ul li a:hover {
+      color: var(--mainColor);
+      background: var(--white);
+    }
+
+    /*MAIN*/
+
+    .left,
+    .right {
+      flex: 0 0 50%;
+      max-width: 50%;
+      padding: 20px;
+    }
+    .left .line {
+      width: 15%;
+      height: 2px;
+      background-color: var(--mainColor);
+      display: inline-block;
+    }
+    .left h2 {
+      margin-top: 25px;
+      font-size: 50px;
+      color: var(--white);
+      line-height: 55px;
+    }
+    .left h2 span {
+      color: var(--mainColor);
+      font-size: 52px;
+    }
+    .left p {
+      color: var(--whiteSmoke);
+      font-size: 16px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      height: 44px;
+      padding: 0px 30px;
+      background-color: var(--frostGreen);
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--white);
+      letter-spacing: 1px;
+      border: none;
+      margin-top: 15px;
+      box-shadow: 0px 8px 24px 0 rgb(0, 209, 0, 0.2);
+      transition: all 0.2s linear;
+    }
+
+    .btn:hover {
+      background-color: var(--white);
+      color: var(--mainColor);
+      box-shadow: 0 8px 24px 0 rgba(138, 140, 146, 0.2);
+    }
+
+    .social-media {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      max-width: 500px;
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .social-media a {
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
+    .social-media a:hover {
+      color: var(--limeGreen);
+      transform: translateX(5px);
+    }
+
+    .social-media i {
+      font-size: 18px;
+      min-width: 20px;
+    }
+
+    .form {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .right h4 {
+      font-weight: 600;
+      color: var(--white);
+    }
+    .right h6 {
+      color: var(--white);
+      margin-bottom: 30px;
+    }
+    .right h6 span {
+      padding: 0 20px;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    input[type="checkbox"] {
+      display: none;
+    }
+    .checkbox:checked + label,
+    .checkbox:not(:checked) + label {
+      position: relative;
+      display: block;
+      text-align: center;
+      width: 60px;
+      height: 16px;
+      border-radius: 8px;
+      background-color: var(--mainColor);
+      padding: 0;
+      margin: 10px auto;
+      cursor: pointer;
+    }
+
+    .checkbox:checked + label::before,
+    .checkbox:not(:checked) + label::before {
+      position: absolute;
+      display: block;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      color: var(--mainColor);
+      background-color: var(--white);
+      font-family: "Material Icons";
+      content: "\f1e2";
+      z-index: 20;
+      top: -10px;
+      left: -10px;
+      line-height: 36px;
+      text-align: center;
+      font-size: 24px;
+      transition: all 0.5s ease;
+    }
+
+    .checkbox:checked + label::before {
+      transform: translateX(44px) rotate(-270deg);
+    }
+
+    .link {
+      color: var(--whiteSmoke);
+      margin-top: 20px;
+      display: block;
+    }
+    .link:hover {
+      color: var(--mainColor);
+    }
+
+    .card-3d-wrap {
+      position: relative;
+      width: 400px;
+      max-width: 100%;
+      height: 400px;
+      margin-top: 60px;
+      transform-style: preserve-3d;
+      perspective: 800px;
+    }
+
+    .card-3d-wrapper {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-style: preserve-3d;
+      transition: all 0.6s ease-out;
+    }
+
+    .checkbox:checked ~ .card-3d-wrap .card-3d-wrapper {
+      transform: rotateY(180deg);
+    }
+
+    .card-front,
+    .card-back {
+      width: 100%;
+      height: 100%;
+      background-color: #32cd32d7;
+      background-image: url("https://i.postimg.cc/4dnZCH03/background.png");
+      background-position: bottom center;
+      background-repeat: no-repeat;
+      background-size: 300%;
+      position: absolute;
+      border-radius: 6px;
+      left: 0;
+      top: 0;
+      transform-style: preserve-3d;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+    }
+
+    .center-wrap {
+      position: absolute;
+      width: 100%;
+      padding: 0 35px;
+      top: 50%;
+      left: 0;
+      transform: translate3d(0, -50%, 35px) perspective(100px);
+      display: block;
+      z-index: 20;
+    }
+
+    .heading {
+      margin-bottom: 20px;
+      font-size: 24px;
+      text-transform: uppercase;
+    }
+    .form-group {
+      position: relative;
+      display: block;
+      margin-bottom: 10px;
+    }
+    .form-group input::placeholder {
+      color: var(--whiteSmoke);
+      opacity: 0.7;
+      transition: all 0.2s linear;
+    }
+    .form-group input:focus::placeholder {
+      opacity: 0;
+      transition: all 0.2s linear;
+    }
+
+    .form-style {
+      padding: 13px 20px;
+      padding-left: 55px;
+      height: 48px;
+      width: 100%;
+      font-weight: 500;
+      border-radius: 4px;
+      font-size: 14px;
+      line-height: 22px;
+      letter-spacing: 0.5px;
+      outline: none;
+      color: var(--whiteSmoke);
+      background-color: #242323;
+      border: none;
+      box-shadow: var(--shadow);
+    }
+
+    .form-style:focus,
+    .form-style:active {
+      border: none;
+      outline: none;
+      box-shadow: var(--shadow);
+    }
+
+    .input-icon {
+      position: absolute;
+      top: 12px;
+      left: 18px;
+      height: 48px;
+      font-size: 24px;
+      text-align: left;
+      color: var(--mainColor);
+      transition: all 0.2s linear;
+    }
+
+    /*MEDIA QUERIES*/
+
+    @media (max-width: 992px) {
+      nav .menu-btn i {
+        display: block;
+      }
+      nav .container {
+        padding: 0;
+      }
+      nav ul {
+        position: fixed;
+        top: 85px;
+        left: -100%;
+        background-color: #1b1b1b;
+        height: 320px;
+        width: 100%;
+        display: block;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+
+      #click:checked ~ ul {
+        left: 0;
+      }
+      nav ul li {
+        margin: 20px 0;
+      }
+      nav ul li a {
+        display: block;
+        font-size: 20px;
+      }
+      nav ul li a.active,
+      nav ul li a:hover {
+        background: none;
+        color: var(--mainColor);
+      }
+
+      .left h2 {
+        font-size: 40px;
+      }
+      .left h2 span {
+        font-size: 42px;
+      }
+      .left p {
+        font-size: 14px;
+      }
+      .card-3d-wrap {
+        width: 350px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .left,
+      .right {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+      .left {
+        display: grid;
+        place-items: center;
+        order: 2;
+      }
+      .right {
+        order: 1;
+      }
+      .left h2 {
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .left h2 {
+        font-size: 28px;
+      }
+      .left h2 span {
+        font-size: 30px;
+      }
+      .card-3d-wrap {
+        width: 300px;
+      }
+    }
+    .alert {
+      padding: 10px 15px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .alert-error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+  </style>
+  <body>
+    <nav class="navbar">
+      <div class="container">
+        <div class="row justify-content-between align-items-center">
+          <div class="logo">PETROVIETNAM <span>PVCFC</span></div>
+          <input type="checkbox" name="" id="click" />
+          <label for="click" class="menu-btn">
+            <i class="material-icons">menu</i>
+          </label>
+          <ul>
+            <li>
+              <a href="https://www.pvcfc.com.vn/" class="active">Trang chủ</a>
+            </li>
+            <li>
+              <a href="https://www.pvcfc.com.vn/gioi-thieu">Giới thiệu</a>
+            </li>
+            <li>
+              <a href="https://www.pvcfc.com.vn/tin-hoat-dong-cong-ty"
+                >Tin tức</a
+              >
+            </li>
+            <li><a href="https://www.pvcfc.com.vn/san-pham">Sản phẩm</a></li>
+            <li><a href="https://www.pvcfc.com.vn/hoi-dap">Hỏi đáp</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <section>
+      <div class="container">
+        <div class="row full-screen align-items-center">
+          <div class="left">
+            <span class="line"></span>
+            <h2>
+              Phân bón Cà Mau <br />
+              cung cấp
+              <span>bộ giải pháp dinh dưỡng toàn diện cho cây trồng</span>
+            </h2>
+            <p>Đồng hành cùng nhà nông</p>
+            <a href="https://www.pvcfc.com.vn/lien-he" class="btn">Liên hệ</a>
+
+            <div class="social-media">
+              <a href="https://www.facebook.com/phanboncamau"
+                ><i class="fa-brands fa-facebook-f"></i
+                >facebook.com/phanboncamau</a
+              >
+              <a href="#"
+                ><i class="fa-solid fa-envelope"></i>contact@pvcfc.com.vn</a
+              >
+              <a href="#"><i class="fa-solid fa-phone"></i>1800 888606</a>
+              <a href="#"
+                ><i class="fa-solid fa-globe"></i>Lô D, Khu CN phường 1, Ngô
+                Quyền, P.An Xuyên, Tỉnh Cà Mau, Việt Nam
+              </a>
+            </div>
+          </div>
+          <div class="right">
+            <div class="form">
+              <div class="text-center">
+                <h6><span>Đăng nhập</span> <span>Đăng ký</span></h6>
+                <input type="checkbox" class="checkbox" id="reg-log" />
+                <label for="reg-log"></label>
+                <div class="card-3d-wrap">
+                  <div class="card-3d-wrapper">
+                    <div class="card-front">
+                      <div class="center-wrap">
+                        <h4 class="heading">Đăng nhập</h4>
+
+                        <% if (message) { %>
+                        <div class="alert alert-success"><%= message %></div>
+                        <% } %> <% if (error) { %>
+                        <div class="alert alert-error"><%= error %></div>
+                        <% } %>
+
+                        <form method="POST" action="/auth/login">
+                          <div class="form-group">
+                            <input
+                              type="text"
+                              name="loginInput"
+                              class="form-style"
+                              placeholder="Nhập email hoặc tên đăng nhập"
+                              autocomplete="off"
+                              required
+                            />
+                            <i class="input-icon material-icons">person</i>
+                          </div>
+
+                          <div class="form-group">
+                            <input
+                              type="password"
+                              name="password"
+                              class="form-style"
+                              placeholder="Nhập mật khẩu"
+                              autocomplete="off"
+                              required
+                            />
+                            <i class="input-icon material-icons">lock</i>
+                          </div>
+
+                          <button type="submit" class="btn">Đăng nhập</button>
+                        </form>
+
+                        <p class="text-center">
+                          <a href="/forgot_password" class="link"
+                            >Quên mật khẩu?</a
+                          >
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="card-back">
+                      <div class="center-wrap">
+                        <h4 class="heading">Đăng ký</h4>
+                        <form method="POST" action="/auth/register">
+                          <div class="form-group">
+                            <input
+                              type="text"
+                              name="full_name"
+                              class="form-style"
+                              placeholder="Nhập họ tên"
+                              autocomplete="off"
+                              required
+                            />
+                            <i class="input-icon material-icons"
+                              >perm_identity</i
+                            >
+                          </div>
+
+                          <div class="form-group">
+                            <input
+                              type="text"
+                              name="username"
+                              class="form-style"
+                              placeholder="Nhập tên đăng nhập"
+                              autocomplete="off"
+                              required
+                            />
+                            <i class="input-icon material-icons">person</i>
+                          </div>
+
+                          <div class="form-group">
+                            <input
+                              type="email"
+                              name="email"
+                              class="form-style"
+                              placeholder="Nhập email"
+                              autocomplete="off"
+                              required
+                            />
+                            <i class="input-icon material-icons"
+                              >alternate_email</i
+                            >
+                          </div>
+
+                          <div class="form-group">
+                            <input
+                              type="password"
+                              name="password"
+                              id="register-password"
+                              class="form-style"
+                              placeholder="Nhập mật khẩu"
+                              autocomplete="off"
+                              required
+                            />
+                            <i class="input-icon material-icons">lock</i>
+                            <div
+                              id="password-strength"
+                              style="margin-top: 5px"
+                            ></div>
+                          </div>
+
+                          <button type="submit" class="btn">Đăng ký</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+      const passwordInput = document.getElementById("register-password");
+      const strengthText = document.getElementById("password-strength");
+
+      const levels = [
+        "Rất yếu 🔒",
+        "Yếu 😟",
+        "Trung bình 😐",
+        "Mạnh 👍",
+        "Rất mạnh 💪",
+      ];
+
+      passwordInput.addEventListener("input", () => {
+        const result = zxcvbn(passwordInput.value);
+        strengthText.textContent = "Độ mạnh: " + levels[result.score];
+
+        // Màu sắc gợi ý theo độ mạnh
+        const colors = ["#3CB371", "#2E8B57", "#228B22", "#008000", "#006400"];
+        strengthText.style.color = colors[result.score];
+      });
+
+      // 👉 THÊM ĐOẠN NÀY NGAY DƯỚI:
+      const form = passwordInput.closest("form");
+      form.addEventListener("submit", (e) => {
+        const result = zxcvbn(passwordInput.value);
+        if (result.score < 2) {
+          e.preventDefault();
+          alert("Mật khẩu quá yếu, hãy chọn mật khẩu mạnh hơn!");
+        }
+      });
+    </script>
+    <script>
+      setTimeout(() => {
+        const alerts = document.querySelectorAll(".alert");
+        alerts.forEach((el) => {
+          el.style.opacity = "0";
+          setTimeout(() => el.remove(), 500);
+        });
+      }, 4000);
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"></script>
+  </body>
+</html>

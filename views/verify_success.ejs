@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Xác thực thành công - PVCFC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to right, #00843d, #28a745);
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+      }
+
+      .success-box {
+        background: #fff;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        text-align: center;
+        max-width: 400px;
+        width: 100%;
+        animation: fadeIn 0.6s ease-in-out;
+      }
+
+      .success-box h1 {
+        color: #28a745;
+        margin-bottom: 15px;
+        font-size: 26px;
+      }
+
+      .success-box p {
+        font-size: 16px;
+        margin-bottom: 25px;
+        color: #444;
+      }
+
+      .success-box a {
+        background-color: #28a745;
+        color: white;
+        padding: 12px 25px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: background 0.3s ease;
+      }
+
+      .success-box a:hover {
+        background-color: #218838;
+      }
+
+      .logo {
+        font-size: 20px;
+        font-weight: bold;
+        color: #00843d;
+        margin-bottom: 10px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="success-box">
+      <div class="logo">PETROVIETNAM PVCFC</div>
+      <h1>Xác thực thành công!</h1>
+      <p>
+        Tài khoản của bạn đã được xác thực thành công.<br />
+        Bây giờ bạn có thể đăng nhập và sử dụng hệ thống.
+      </p>
+      <a href="/login">Đăng nhập ngay</a>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+<!-- Modal revenue by day -->
+<!-- Modal Thêm doanh thu theo ngày -->
+<div id="revenueModalDay" class="modal">
+  <div class="modal-content">
+    <h3>Doanh thu theo ngày</h3>
+    <form action="/revenues/save-day" method="POST">
+      <input type="hidden" name="oldNgay" id="oldNgay" />
+      <input type="date" name="ngay" id="ngay" required />
+      <input
+        type="number"
+        name="soDonHang"
+        placeholder="Số đơn hàng"
+        required
+      />
+      <input
+        type="number"
+        name="doanhThu"
+        placeholder="Doanh thu (VNĐ)"
+        required
+      />
+      <input type="number" name="chiPhi" placeholder="Chi phí (VNĐ)" required />
+      <input
+        type="number"
+        name="loiNhuan"
+        placeholder="Lợi nhuận (VNĐ)"
+        required
+      />
+      <input type="text" name="ghiChu" placeholder="Ghi chú" />
+      <div class="actions">
+        <button type="button" onclick="closeRevenueModal()">Huỷ</button>
+        <button type="submit">Lưu</button>
+      </div>
+    </form>
+  </div>
+</div>

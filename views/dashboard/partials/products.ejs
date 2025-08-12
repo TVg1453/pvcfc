@@ -1,0 +1,61 @@
+<!-- Products section here -->
+<!-- Table Products Section-->
+<div
+  class="table-container product-section"
+  id="products-section"
+  style="display: none"
+>
+  <div
+    class="chart-header"
+    style="display: flex; justify-content: space-between; align-items: center"
+  >
+    <h3>Sản phẩm</h3>
+    <button class="btn btn-success" onclick="openProductModal()">
+      + Thêm sản phẩm
+    </button>
+  </div>
+  <div class="product-search-bar">
+    <select id="searchType">
+      <option value="MaSP">Mã sản phẩm</option>
+      <option value="TenSanPham">Tên sản phẩm</option>
+      <option value="Gia">Giá</option>
+      <option value="SoLuong">Số lượng</option>
+    </select>
+    <i class="fas fa-search"></i>
+    <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..." />
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Mã SP</th>
+        <th>Tên sản phẩm</th>
+        <th>Giá</th>
+        <th>Số lượng</th>
+        <th>Đơn vị</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% products.forEach(product => { %>
+      <tr>
+        <td><%= product.MaSP %></td>
+        <td><%= product.TenSanPham %></td>
+        <td><%= product.Gia %></td>
+        <td><%= product.SoLuong %></td>
+        <td><%= product.DonVi %></td>
+        <td>
+          <form action="/products/delete" method="POST" style="display: inline">
+            <input type="hidden" name="MaSP" value="<%= product.MaSP %>" />
+            <button
+              class="btn btn-sm btn-danger"
+              onclick="return confirm('Xóa sản phẩm này?')"
+            >
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,21 @@
+<!-- Revenue chart canvas here -->
+<div class="chart-container">
+  <div
+    class="chart-header"
+    style="display: flex; justify-content: space-between; align-items: center"
+  >
+    <h3 style="margin: 0">Tổng quan về doanh thu</h3>
+    <select
+      id="revenueChartType"
+      onchange="updateRevenueChart()"
+      style="padding: 5px 10px"
+    >
+      <option value="day">Theo ngày</option>
+      <option value="product">Theo sản phẩm</option>
+      <option value="customer">Theo khách hàng</option>
+    </select>
+  </div>
+  <div class="chart-body">
+    <canvas id="revenueChart" style="max-height: 420px"></canvas>
+  </div>
+</div>

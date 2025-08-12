@@ -1,0 +1,39 @@
+<!-- Stats cards here -->
+<div class="cards">
+  <div class="card stat-card">
+    <div class="stat-icon primary">
+      <i class="fas fa-users"></i>
+    </div>
+    <div class="stat-text">
+      <h3><%= users.length %></h3>
+      <p>Tổng số người dùng</p>
+    </div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-icon success">
+      <i class="fas fa-shopping-cart"></i>
+    </div>
+    <div class="stat-text">
+      <h3><%= orders.length %></h3>
+      <p>Tổng số đơn hàng</p>
+    </div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-icon warning">
+      <i class="fas fa-box"></i>
+    </div>
+    <div class="stat-text">
+      <h3><%= products.length %></h3>
+      <p>Tổng số sản phẩm</p>
+    </div>
+  </div>
+  <div class="card stat-card">
+    <div class="stat-icon danger">
+      <i class="fa-solid fa-dollar-sign"></i>
+    </div>
+    <div class="stat-text">
+      <h3><%= totalRevenue.toLocaleString() %> đ</h3>
+      <p>Tổng doanh thu</p>
+    </div>
+  </div>
+</div>

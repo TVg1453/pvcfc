@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('partials/head') %>
+  <body>
+    <%- include('partials/sidebar') %>
+
+    <div class="main-content">
+      <%- include('partials/topnav') %>
+
+      <div class="dashboard-content">
+        <%- include('partials/stats') %> <%-include('partials/chart') %>
+        <%-include('partials/recent-orders') %> <%-include('partials/users') %>
+        <%-include('partials/products') %> <%-include('partials/orders') %>
+        <%-include('partials/revenue') %> <%-include('partials/settings') %>
+      </div>
+    </div>
+    <%-include('modals/user-modal.ejs') %>
+    <%-include('modals/product-modal.ejs') %>
+    <%-include('modals/order-modal.ejs') %> <%-include('modals/revenue-day.ejs')
+    %> <%-include('modals/revenue-product.ejs') %>
+    <%-include('modals/revenue-customer.ejs') %> <%-include('partials/scripts')
+    %>
+  </body>
+</html>

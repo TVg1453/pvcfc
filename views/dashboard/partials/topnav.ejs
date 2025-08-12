@@ -1,0 +1,32 @@
+<!-- Top navigation content here -->
+<div class="top-nav">
+  <div class="search-bar">
+    <i class="fas fa-search"></i>
+    <input type="text" placeholder="Tìm kiếm..." />
+  </div>
+  <div class="user-menu">
+    <div class="dropdown user-dropdown">
+      <% if (avatar) { %>
+      <img
+        src="/uploads/<%= avatar %>"
+        alt="Avatar"
+        style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover"
+      />
+      <% } else { %>
+      <img
+        src="/images/default-avatar.png"
+        alt="Avatar"
+        style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover"
+      />
+      <% } %>
+      <div class="user-name"><%= name %></div>
+
+      <div class="dropdown-content">
+        <a href="/information"
+          ><i class="fas fa-fw fa-user"></i> Trang cá nhân</a
+        >
+        <a href="/login"><i class="fas fa-fw fa-sign-out-alt"></i> Đăng xuất</a>
+      </div>
+    </div>
+  </div>
+</div>

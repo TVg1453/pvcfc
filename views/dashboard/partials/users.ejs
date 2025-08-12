@@ -1,0 +1,79 @@
+<!-- Users management section here -->
+<!-- /views/dashboard/partials/users.ejs-->
+<div
+  class="table-container user-section"
+  id="users-section"
+  style="display: none"
+>
+  <div
+    class="chart-header"
+    style="display: flex; justify-content: space-between; align-items: center"
+  >
+    <h3>Người dùng</h3>
+    <button onclick="openAddUserModal()" class="btn btn-success">
+      + Thêm người dùng
+    </button>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Họ tên</th>
+        <th>Email</th>
+        <th>Quyền</th>
+        <th>Công ty</th>
+        <th>Phòng ban</th>
+        <th>Chức vụ</th>
+        <th>Trạng thái</th>
+        <th>Cấp độ bảo mật</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach(user => { %>
+      <tr>
+        <td><%= user.id %></td>
+        <td><%= user.full_name %></td>
+        <td><%= user.email %></td>
+        <td><%= user.user_type %></td>
+        <td><%= user.company_name || '' %></td>
+        <td><%= user.department || ''%></td>
+        <td><%= user.position ||''%></td>
+        <td><%= user.status ||''%></td>
+        <td><%= user.safety_level ||''%></td>
+        <td>
+          <button
+            class="btn btn-sm btn-primary"
+            onclick="openEditUserModal(
+                      '<%= user.id %>',
+                      '<%= user.full_name %>',
+                      '<%= user.username || '' %>',
+                      '<%= user.email %>',
+                      '<%= user.phone || '' %>',
+                      '<%= user.user_type %>',
+                      '<%= user.company_name || '' %>',
+                      '<%= user.department || '' %>',
+                      '<%= user.position || '' %>',
+                      '<%= user.status || '' %>',
+                      '<%= user.safety_level || '' %>',
+                    )"
+            title="Chỉnh sửa"
+          >
+            Chỉnh sửa
+          </button>
+          <form action="/users/delete" method="POST" style="display: inline">
+            <input type="hidden" name="id" value="<%= user.id %>" />
+            <button
+              class="btn btn-sm btn-danger"
+              onclick="return confirm('Xóa người dùng này?')"
+              title="Xoá"
+            >
+              Xóa
+            </button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

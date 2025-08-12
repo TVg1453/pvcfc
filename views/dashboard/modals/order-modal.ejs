@@ -1,0 +1,38 @@
+<!-- Modal order add/edit -->
+<!-- Modal thêm/sửa đơn hàng -->
+<div id="orderModal" class="modal">
+  <div class="modal-content">
+    <h3 id="orderModalTitle">Thêm đơn hàng</h3>
+    <form action="/orders/save" method="POST">
+      <input type="hidden" name="oldMaDonHang" id="oldMaDonHang" />
+      <input type="text" name="maDonHang" placeholder="Mã đơn hàng" required />
+      <input
+        type="text"
+        name="tenKhachHang"
+        placeholder="Tên khách hàng"
+        required
+      />
+      <input type="text" name="soDienThoai" placeholder="Số điện thoại" />
+      <input type="email" name="email" placeholder="Email" />
+      <input type="date" name="ngayMua" />
+      <input type="text" name="diaChi" placeholder="Địa chỉ giao hàng" />
+      <input
+        type="text"
+        name="thanhToan"
+        placeholder="Phương thức thanh toán"
+      />
+      <input type="number" name="tongTienHang" placeholder="Tổng tiền hàng" />
+      <input type="number" name="phiVanChuyen" placeholder="Phí vận chuyển" />
+      <input type="number" name="giamGia" placeholder="Giảm giá" />
+      <input type="number" name="tongTien" placeholder="Tổng tiền" />
+      <input type="text" name="nguoiXuLy" placeholder="Người xử lý" />
+      <input type="text" name="trangThai" placeholder="Trạng thái" />
+      <input type="date" name="ngayHoanThanh" />
+      <input type="text" name="ghiChu" placeholder="Ghi chú" />
+      <div class="actions">
+        <button type="button" onclick="closeOrderModal()">Hủy</button>
+        <button type="submit">Lưu</button>
+      </div>
+    </form>
+  </div>
+</div>

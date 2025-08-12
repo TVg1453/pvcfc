@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lỗi truy cập</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #ff4e50, #f9d423);
+        margin: 0;
+        padding: 0;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+      }
+      .container {
+        background: rgba(0, 0, 0, 0.4);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        max-width: 500px;
+        width: 90%;
+      }
+      h1 {
+        font-size: 40px;
+        margin-bottom: 10px;
+      }
+      p {
+        font-size: 18px;
+        margin-bottom: 20px;
+      }
+      a {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #fff;
+        color: #ff4e50;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: 0.3s;
+      }
+      a:hover {
+        background: #ff4e50;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Truy cập bị từ chối</h1>
+      <p><%= message %></p>
+      <a href="/">Quay lại trang chủ</a>
+    </div>
+  </body>
+</html>

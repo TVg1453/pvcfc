@@ -1,0 +1,105 @@
+<!-- Orders section here -->
+<div
+  class="table-container order-section"
+  id="orders-section"
+  style="display: none"
+>
+  <div
+    class="chart-header"
+    style="display: flex; justify-content: space-between; align-items: center"
+  >
+    <h3>Đơn hàng</h3>
+    <button class="btn btn-success" onclick="openOrderModal()">
+      + Thêm đơn hàng
+    </button>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Mã đơn hàng</th>
+        <th>Tên khách hàng</th>
+        <th>Số điện thoại</th>
+        <th>Email</th>
+        <th>Ngày mua</th>
+        <th>Địa chỉ giao hàng</th>
+        <th>Phương thức thanh toán</th>
+        <th>Tổng tiền hàng</th>
+        <th>Phí vận chuyển</th>
+        <th>Giảm giá</th>
+        <th>Tổng tiền</th>
+        <th>Người xử lý</th>
+        <th>Trạng thái</th>
+        <th>Ngày hoàn thành</th>
+        <th>Ghi chú</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% orders.forEach(order => { %>
+      <tr>
+        <td><%= order.maDonHang %></td>
+        <td><%= order.tenKhachHang %></td>
+        <td><%= order.soDienThoai %></td>
+        <td><%= order.email %></td>
+        <td><%= order.ngayMua %></td>
+        <td><%= order.diaChi %></td>
+        <td><%= order.thanhToan %></td>
+        <td><%= order.tongTienHang.toLocaleString() %> đ</td>
+        <td><%= order.phiVanChuyen.toLocaleString() %> đ</td>
+        <td><%= order.giamGia.toLocaleString() %> đ</td>
+        <td><%= order.tongTien.toLocaleString() %> đ</td>
+        <td><%= order.nguoiXuLy %></td>
+        <td>
+          <% if (order.trangThai === "Đã giao") { %>
+          <span class="badge badge-success">Đã giao</span>
+          <% } else if (order.trangThai === "Đang giao") { %>
+          <span class="badge badge-warning">Đang giao</span>
+          <% } else { %>
+          <span class="badge badge-danger"><%= order.trangThai %></span>
+          <% } %>
+        </td>
+        <td><%= order.ngayHoanThanh %></td>
+        <td><%= order.ghiChu %></td>
+        <td>
+          <button
+            class="btn btn-sm btn-primary"
+            onclick="openEditOrderModal(
+                    '<%= order.maDonHang %>',
+                    '<%= order.tenKhachHang %>',
+                    '<%= order.soDienThoai %>',
+                    '<%= order.email %>',
+                    '<%= order.ngayMua %>',
+                    '<%= order.diaChi %>',
+                    '<%= order.thanhToan %>',
+                    '<%= order.tongTienHang %>',
+                    '<%= order.phiVanChuyen %>',
+                    '<%= order.giamGia %>',
+                    '<%= order.tongTien %>',
+                    '<%= order.nguoiXuLy %>',
+                    '<%= order.trangThai %>',
+                    '<%= order.ngayHoanThanh %>',
+                    '<%= order.ghiChu %>'
+                  )"
+            title="Chỉnh sửa"
+          >
+            Chỉnh sửa
+          </button>
+          <form action="/orders/delete" method="POST" style="display: inline">
+            <input
+              type="hidden"
+              name="maDonHang"
+              value="<%= order.maDonHang %>"
+            />
+            <button
+              class="btn btn-sm btn-danger"
+              onclick="return confirm('Bạn có chắc muốn xóa đơn hàng này?')"
+              title="Xoá"
+            >
+              Xóa
+            </button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>

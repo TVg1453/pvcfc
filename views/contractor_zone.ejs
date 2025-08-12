@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Khu vực Nhà thầu</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+    />
+    <style>
+      body {
+        font-family: "Lato", Arial, sans-serif;
+        background: linear-gradient(135deg, #1b5e20, #4caf50);
+        margin: 0;
+        color: white;
+      }
+      .zone-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        margin: 15px 0;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+      .card h2 {
+        margin-top: 0;
+        color: #ffd54f;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      button {
+        background: #ff9800;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      button:hover {
+        background: #ffb74d;
+      }
+      a.back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 15px;
+        background: #ffffff22;
+        border-radius: 6px;
+        color: white;
+        text-decoration: none;
+      }
+      a.back-btn:hover {
+        background: #ffffff44;
+      }
+      strong.zone-container {
+        color: aliceblue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="zone-container">
+      <h1>Khu vực Nhà thầu</h1>
+      <p>Xin chào, <strong><%= user.full_name %></strong></p>
+
+      <div class="card">
+        <h2>Hồ sơ Nhà thầu</h2>
+        <ul>
+          <li>Giấy phép thi công</li>
+          <li>Chứng chỉ an toàn lao động</li>
+          <li>Huấn luyện PCCC (chưa có)</li>
+        </ul>
+        <button>Tải lên tài liệu</button>
+      </div>
+
+      <div class="card">
+        <h2>Tiến độ phê duyệt</h2>
+        <ul>
+          <li>Giấy phép: Đã duyệt</li>
+          <li>PCCC: Đang xem xét</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Thông báo mới</h2>
+        <ul>
+          <li>Cập nhật quy trình HSE 2025</li>
+          <li>Lịch huấn luyện: 5/8/2025</li>
+        </ul>
+      </div>
+      <a href="javascript:history.back()" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Quay lại
+      </a>
+      <a href="/auth/logout" class="back-btn">Đăng xuất</a>
+    </div>
+  </body>
+</html>

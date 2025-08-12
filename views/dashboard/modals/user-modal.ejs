@@ -1,0 +1,98 @@
+<!-- Modal user add/edit -->
+<!-- Pop-up modal cho Add/Edit User-->
+<!--/views/dashboard/modals/user-modal.ejs-->
+<div id="userModal" class="modal">
+  <div class="modal-content">
+    <h3 id="modalTitle">Thêm/Chỉnh sửa người dùng</h3>
+    <form id="userForm" action="/users/save" method="POST">
+      <input type="hidden" id="userId" name="id" />
+
+      <label for="userName">Họ tên:</label>
+      <input
+        type="text"
+        id="userName"
+        name="full_name"
+        class="form-control"
+        required
+      />
+
+      <label for="userUsername">Tên đăng nhập:</label>
+      <input
+        type="text"
+        id="userUsername"
+        name="username"
+        class="form-control"
+        required
+      />
+
+      <label for="userEmail">Email:</label>
+      <input
+        type="email"
+        id="userEmail"
+        name="email"
+        class="form-control"
+        required
+      />
+
+      <label for="userPhone">Số điện thoại:</label>
+      <input type="text" id="userPhone" name="phone" class="form-control" />
+
+      <label for="userType">Vai trò:</label>
+      <select id="userType" name="user_type" class="form-control" required>
+        <option value="admin">Admin</option>
+        <option value="contractor">Contractor</option>
+        <option value="visitor">Visitor</option>
+        <option value="hse_staff">HSE Staff</option>
+      </select>
+
+      <label for="userCompany">Tên công ty:</label>
+      <input
+        type="text"
+        id="userCompany"
+        name="company_name"
+        class="form-control"
+      />
+
+      <label for="userDepartment">Phòng ban:</label>
+      <input
+        type="text"
+        id="userDepartment"
+        name="department"
+        class="form-control"
+        required
+      />
+
+      <label for="userPosition">Chức vụ:</label>
+      <input
+        type="text"
+        id="userPosition"
+        name="position"
+        class="form-control"
+      />
+
+      <label for="userStatus">Trạng thái:</label>
+      <select id="userStatus" name="status" class="form-control">
+        <option value="active">Hoạt động</option>
+        <option value="inactive">Không hoạt động</option>
+        <option value="suspended">Tạm khóa</option>
+        <option value="pending_approval">Chờ duyệt</option>
+      </select>
+
+      <label for="userSafety">Mức bảo mật:</label>
+      <select id="userSafety" name="safety_level" class="form-control">
+        <option value="basic">Cơ bản</option>
+        <option value="intermediate">Trung bình</option>
+        <option value="advanced">Nâng cao</option>
+      </select>
+
+      <button type="submit" class="btn btn-primary mt-3">Lưu</button>
+      <button
+        type="button"
+        class="btn btn-secondary mt-3"
+        onclick="closeUserModal()"
+      >
+        Hủy
+      </button>
+    </form>
+  </div>
+</div>

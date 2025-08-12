@@ -1,0 +1,97 @@
+<!-- Settings table here -->
+<!-- Table Settings Section -->
+<div class="table-container" id="settings-section">
+  <div class="chart-header">
+    <h3>Cài đặt hệ thống</h3>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Mục</th>
+        <th>Mô tả</th>
+        <th>Giá trị</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Email hệ thống</td>
+        <td>Email được dùng để gửi mã xác thực & OTP</td>
+        <td><%= process.env.EMAIL_USER || "tvuong1453@gmail.com" %></td>
+        <td>
+          <button
+            class="btn btn-sm btn-primary"
+            onclick="alert('Tính năng này cần chỉnh trong file cấu hình server.')"
+          >
+            Xem
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>Hiệu lực OTP</td>
+        <td>Thời gian mã OTP có hiệu lực (phút)</td>
+        <td>5 phút</td>
+        <td>
+          <button
+            class="btn btn-sm btn-primary"
+            onclick="alert('Mặc định 5 phút - cấu hình trong server.js')"
+          >
+            Cấu hình
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>Số lần gửi lại OTP</td>
+        <td>Tối thiểu 1 phút giữa 2 lần gửi</td>
+        <td>60 giây</td>
+        <td>
+          <button
+            class="btn btn-sm btn-primary"
+            onclick="alert('Cố định trong mã nguồn')"
+          >
+            Xem
+          </button>
+        </td>
+      </tr>
+      <tr>
+        <td>Dữ liệu hệ thống</td>
+        <td>Tải xuống các file dữ liệu Excel hiện tại</td>
+        <td>product.xlsx, don_hang.xlsx, doanh_thu.xlsx</td>
+        <td>
+          <a href="/download/all" class="btn btn-sm btn-success">Tải về</a>
+        </td>
+      </tr>
+      <tr>
+        <td>Khôi phục dữ liệu</td>
+        <td>Import từ file Excel</td>
+        <td></td>
+        <td>
+          <form
+            action="/admin/import-excel"
+            method="POST"
+            enctype="multipart/form-data"
+          >
+            <select name="type" required>
+              <option value="users">Người dùng</option>
+              <option value="products">Sản phẩm</option>
+              <option value="orders">Đơn hàng</option>
+              <option value="revenues">Doanh thu</option>
+            </select>
+            <input type="file" name="excelFile" accept=".xlsx" required />
+            <button class="btn btn-sm btn-success" type="submit">Import</button>
+          </form>
+        </td>
+      </tr>
+      <tr>
+        <td>Giao diện</td>
+        <td>Đổi giữa chế độ sáng/tối</td>
+        <td id="theme-status">Chế độ sáng</td>
+        <td>
+          <button class="btn btn-sm btn-secondary" onclick="toggleTheme()">
+            Chuyển
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

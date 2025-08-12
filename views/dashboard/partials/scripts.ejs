@@ -1,0 +1,605 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const revenuesByDay = <%- JSON.stringify(revenuesByDay || []) %>;
+  const revenuesByProduct = <%- JSON.stringify(revenuesByProduct || []) %>;
+  const revenuesByCustomer = <%- JSON.stringify(revenuesByCustomer || []) %>;
+
+  const revenueCtx = document.getElementById("revenueChart").getContext("2d");
+  let revenueChart;
+
+  function createChart(labels, data, labelName) {
+    if (revenueChart) revenueChart.destroy();
+    revenueChart = new Chart(revenueCtx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: labelName,
+          data: data,
+          borderColor: "rgba(54, 162, 235, 1)",
+          backgroundColor: "rgba(54, 162, 235, 0.2)",
+          tension: 0.4,
+          fill: true,
+          pointRadius: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return value.toLocaleString() + ' đ';
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function updateRevenueChart() {
+    const type = document.getElementById("revenueChartType").value;
+
+    if (type === "day") {
+      const recent = revenuesByDay.slice(-30);
+      const labels = revenuesByDay.map(r => r.ngay);
+      const data = revenuesByDay.map(r => r.doanhThu || 0);
+      createChart(labels, data, "Doanh thu theo ngày");
+
+    } else if (type === "product") {
+      const labels = revenuesByProduct.map(r => r.tenSanPham);
+      const data = revenuesByProduct.map(r => r.doanhThu || 0);
+      createChart(labels, data, "Doanh thu theo sản phẩm");
+
+    } else if (type === "customer") {
+      const labels = revenuesByCustomer.map(r => r.tenKhachHang);
+      const data = revenuesByCustomer.map(r => r.tongTien || 0);
+      createChart(labels, data, "Doanh thu theo khách hàng");
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", updateRevenueChart);
+</script>
+
+<!-- Ẩn tất cả các section -->
+<script>
+  function hideAllSections() {
+    document.querySelector(".cards").style.display = "none";
+    document.querySelector(".chart-container").style.display = "none";
+    document
+      .querySelectorAll(
+        ".table-container, .user-section, .product-section, #orders-section, #revenue-section, #settings-section"
+      )
+      .forEach((el) => (el.style.display = "none"));
+  }
+
+  // Đặt active cho sidebar
+  function setActive(btnId) {
+    document.querySelectorAll(".sidebar-menu li").forEach((li) => {
+      li.classList.remove("active");
+    });
+    const btn = document.getElementById(btnId);
+    if (btn) btn.parentElement.classList.add("active");
+  }
+
+  // Hiển thị section
+  function showSection(btnId, sectionId) {
+    document.getElementById(btnId)?.addEventListener("click", (e) => {
+      e.preventDefault();
+      setActive(btnId);
+      hideAllSections();
+
+      if (sectionId === "dashboard") {
+        document.querySelector(".cards").style.display = "grid";
+        document.querySelector(".chart-container").style.display = "block";
+      } else {
+        document.getElementById(sectionId).style.display = "block";
+      }
+    });
+  }
+
+  // Gắn sự kiện cho các nút
+  showSection("dashboardBtn", "dashboard");
+  showSection("usersBtn", "users-section");
+  showSection("productsBtn", "products-section");
+  showSection("ordersBtn", "orders-section");
+  showSection("revenueBtn", "revenue-section");
+  showSection("settingsBtn", "settings-section");
+
+  // Giữ tab sau reload bằng hash
+  window.addEventListener("DOMContentLoaded", () => {
+    const hash = window.location.hash;
+    if (hash === "#users") document.getElementById("usersBtn").click();
+    else if (hash === "#products")
+      document.getElementById("productsBtn").click();
+    else document.getElementById("dashboardBtn").click();
+  });
+
+  // Chuyển tab doanh thu
+  function switchRevenueTab(tab) {
+    const tabs = ["day", "product", "customer"];
+    tabs.forEach((t) => {
+      document.getElementById("revenue-" + t).style.display =
+        t === tab ? "block" : "none";
+    });
+  }
+
+  // Dark / Light mode
+  function toggleTheme() {
+    const body = document.body;
+    const isDark = body.classList.toggle("dark-mode");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    document.getElementById("theme-status").innerText = isDark
+      ? "Chế độ tối"
+      : "Chế độ sáng";
+  }
+
+  // Giao diện tối mặc định nếu đã chọn
+  window.addEventListener("DOMContentLoaded", () => {
+    const theme = localStorage.getItem("theme");
+    if (theme === "dark") {
+      document.body.classList.add("dark-mode");
+      document.getElementById("theme-status").innerText = "Chế độ tối";
+    }
+  });
+</script>
+
+<!-- Script để chuyển đổi tab -->
+<script>
+  function switchRevenueTab(tab) {
+    const tabs = ["day", "product", "customer"];
+    tabs.forEach((t) => {
+      document.getElementById("revenue-" + t).style.display =
+        t === tab ? "block" : "none";
+    });
+  }
+</script>
+
+<!-- Pop-up phần Add User và Edit User -->
+<script>
+  function openAddUserModal() {
+    document.getElementById("modalTitle").textContent = "Thêm người dùng";
+    document.getElementById("userForm").reset();
+    document.getElementById("userId").value = "";
+    document.getElementById("userName").value = "";
+    document.getElementById("userEmail").value = "";
+    document.getElementById("userType").value = "visitor";
+    document.getElementById("userCompany").value = "";
+    document.getElementById("userDepartment").value = "";
+    document.getElementById("userPosition").value = "";
+    document.getElementById("userStatus").value = "pending_approval";
+    document.getElementById("userSafety").value = "basic";
+
+    document.getElementById("userModal").style.display = "block";
+  }
+
+  function openEditUserModal(
+    id,
+    fullName,
+    username,
+    email,
+    phone,
+    userType,
+    company,
+    department,
+    position,
+    status,
+    safety,
+    notes
+  ) {
+    document.getElementById("modalTitle").textContent = "Chỉnh sửa người dùng";
+    document.getElementById("userId").value = id;
+    document.getElementById("userName").value = fullName;
+    document.getElementById("userEmail").value = email;
+    document.getElementById("userType").value = userType;
+    document.getElementById("userCompany").value = company;
+    document.getElementById("userDepartment").value = department;
+    document.getElementById("userPosition").value = position;
+    document.getElementById("userStatus").value = status;
+    document.getElementById("userSafety").value = safety;
+
+    document.getElementById("userModal").style.display = "block";
+  }
+
+  function closeUserModal() {
+    document.getElementById("userModal").style.display = "none";
+  }
+</script>
+
+<!-- Form chỉnh sửa sản phẩm -->
+<script>
+  function closeProductModal() {
+    document.getElementById("productModal").style.display = "none";
+  }
+  function openEditProductModal(ma, ten, gia, sl, donvi) {
+    document.getElementById("productModalTitle").textContent =
+      "Chỉnh sửa sản phẩm";
+    document.getElementById("oldMaSP").value = ma;
+    document.getElementById("MaSP").value = ma;
+    document.getElementById("TenSanPham").value = ten;
+    document.getElementById("Gia").value = gia;
+    document.getElementById("SoLuong").value = sl;
+    document.getElementById("DonVi").value = donvi;
+    document.getElementById("productModal").style.display = "block";
+  }
+  if (window.location.hash === "#products") {
+    document.getElementById("productsBtn").click();
+  } else if (window.location.hash === "#users") {
+    document.getElementById("usersBtn").click();
+  }
+  // Dữ liệu sản phẩm được render từ server
+  const allProducts = JSON.parse("<%- JSON.stringify(products || []) %>");
+
+  function filterProductTable() {
+    const keyword = document
+      .getElementById("searchInputProduct")
+      .value.toLowerCase();
+    const type = document.getElementById("searchType").value;
+
+    const filtered = allProducts.filter((p) => {
+      const value = (p[type] || "").toString().toLowerCase();
+      return value.includes(keyword);
+    });
+
+    // Tạo HTML cho kết quả
+    const html = filtered
+      .map((p) => {
+        return `
+              <tr>
+                <td>${p.MaSP}</td>
+                <td>${p.TenSanPham}</td>
+                <td>${p.Gia.toLocaleString()} đ</td>
+                <td>${p.SoLuong}</td>
+                <td>${p.DonVi}</td>
+              </tr>
+            `;
+      })
+      .join("");
+
+    document.getElementById("productTableBody").innerHTML = html;
+  }
+</script>
+
+<!-- Chức năng tìm kiếm sản phẩm -->
+<script>
+    const allProducts = <%- JSON.stringify(products) %>; // từ server
+    const tableBody = document.querySelector("#products-section tbody");
+    const searchInput = document.getElementById("searchInput");
+    const searchType = document.getElementById("searchType");
+
+    function renderProducts(products) {
+    tableBody.innerHTML = "";
+    products.forEach((item) => {
+    const row = `
+      <tr>
+        <td>${item.MaSP}</td>
+        <td>${item.TenSanPham}</td>
+        <td>${item.Gia}</td>
+        <td>${item.SoLuong}</td>
+        <td>${item.DonVi}</td>
+        <td>
+          <button class="btn btn-sm btn-primary" onclick="openEditProductModal('${item.MaSP}')">Chỉnh sửa</button>
+          <form action="/admin/delete-product" method="POST" style="display:inline;" onsubmit="return confirm('Xóa sản phẩm này?')">
+           <input type="hidden" name="MaSP" value="${item.MaSP}" />
+           <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+          </form>
+        </td>
+      </tr>`;
+    tableBody.innerHTML += row;
+    });
+  }
+
+    searchInput.addEventListener("input", () => {
+      const type = searchType.value;
+      const keyword = searchInput.value.toLowerCase().trim();
+      const filtered = allProducts.filter(p =>
+        String(p[type]).toLowerCase().includes(keyword)
+      );
+      renderProducts(filtered);
+    });
+
+    // Gọi lần đầu để render tất cả
+    renderProducts(allProducts);
+</script>
+
+<!-- Bấm “Hủy” thì tắt form sản phẩm, hiển thị lại tab sản phẩm -->
+<script>
+  function closeProductModal() {
+    document.getElementById("productModal").style.display = "none";
+    document.getElementById("products-section").style.display = "block";
+  }
+
+  function openProductModal() {
+    document.getElementById("productModal").style.display = "block";
+    document.getElementById("products-section").style.display = "none";
+    // Xoá dữ liệu cũ nếu có
+    document.getElementById("productForm").reset();
+    document.getElementById("oldMaSP").value = "";
+  }
+</script>
+
+<!-- Bấm “Chỉnh sửa” thì hiện form, load đúng dữ liệu sản phẩm -->
+<script>
+  function openEditProductModal(maSP) {
+    const product = allProducts.find((p) => p.MaSP === maSP);
+    if (!product) return;
+
+    openProductModal(); // dùng hàm mở form ở trên
+
+    document.getElementById("MaSP").value = product.MaSP;
+    document.getElementById("TenSanPham").value = product.TenSanPham;
+    document.getElementById("Gia").value = product.Gia;
+    document.getElementById("SoLuong").value = product.SoLuong;
+    document.getElementById("DonVi").value = product.DonVi;
+    document.getElementById("oldMaSP").value = product.MaSP;
+  }
+</script>
+
+<!-- Thanh tìm kiếm trong doanh thu-->
+<script>
+  function filterRevenueTable() {
+    const keyword = document
+      .getElementById("revenueSearchInput")
+      .value.toLowerCase();
+    const currentTab = document.querySelector(
+      ".revenue-tab:not([style*='display: none'])"
+    );
+    const rows = currentTab.querySelectorAll("tbody tr");
+
+    rows.forEach((row) => {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(keyword) ? "table-row" : "none";
+    });
+  }
+</script>
+
+<!-- Thêm/ sửa đơn hàng -->
+<script>
+  function openOrderModal() {
+    document.getElementById("orderModalTitle").innerText = "Thêm đơn hàng";
+    document.getElementById("orderModal").style.display = "block";
+    document.querySelector("#orderModal form").reset();
+    document.getElementById("oldMaDonHang").value = "";
+  }
+  function openEditOrderModal(
+    maDonHang,
+    tenKhachHang,
+    soDienThoai,
+    email,
+    ngayMua,
+    diaChi,
+    thanhToan,
+    tongTienHang,
+    phiVanChuyen,
+    giamGia,
+    tongTien,
+    nguoiXuLy,
+    trangThai,
+    ngayHoanThanh,
+    ghiChu
+  ) {
+    document.getElementById("orderModalTitle").innerText = "Chỉnh sửa đơn hàng";
+    document.getElementById("orderModal").style.display = "block";
+
+    const form = document.querySelector("#orderModal form");
+    form.oldMaDonHang.value = maDonHang;
+    form.maDonHang.value = maDonHang;
+    form.tenKhachHang.value = tenKhachHang;
+    form.soDienThoai.value = soDienThoai;
+    form.email.value = email;
+    form.ngayMua.value = ngayMua;
+    form.diaChi.value = diaChi;
+    form.thanhToan.value = thanhToan;
+    form.tongTienHang.value = tongTienHang;
+    form.phiVanChuyen.value = phiVanChuyen;
+    form.giamGia.value = giamGia;
+    form.tongTien.value = tongTien;
+    form.nguoiXuLy.value = nguoiXuLy;
+    form.trangThai.value = trangThai;
+    form.ngayHoanThanh.value = ngayHoanThanh;
+    form.ghiChu.value = ghiChu;
+  }
+  function closeOrderModal() {
+    document.getElementById("orderModal").style.display = "none";
+  }
+
+  window.onclick = function (event) {
+    const modal = document.getElementById("orderModal");
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+</script>
+<script>
+  window.addEventListener("load", () => {
+    const hash = window.location.hash;
+    if (hash === "#orders") {
+      document.getElementById("orders-section").style.display = "block";
+      document.getElementById("products-section").style.display = "none";
+      document.getElementById("users-section")?.style.display = "none";
+      document.getElementById("revenue-section").style.display = "none";
+    }
+  });
+</script>
+<!-- Preview ảnh và cập nhật avatar vào dashboard -->
+<script>
+  const fileInput = document.getElementById("avatarInput");
+  const avatarPreview = document.getElementById("avatarPreview");
+  const croppedAvatarInput = document.getElementById("croppedAvatar");
+
+  fileInput.addEventListener("change", function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        avatarPreview.src = e.target.result;
+        avatarPreview.style.display = "block";
+        croppedAvatarInput.value = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
+<!-- Thêm/ sửa doanh thu -->
+<script>
+  function closeRevenueModal() {
+    document
+      .querySelectorAll(".modal")
+      .forEach((m) => (m.style.display = "none"));
+  }
+
+  function openRevenueModalDay() {
+    document.getElementById("revenueModalDay").style.display = "block";
+    document.getElementById("oldNgay").value = "";
+    document.getElementById("ngay").value = "";
+    document.querySelector("input[name='soDonHang']").value = "";
+    document.querySelector("input[name='doanhThu']").value = "";
+    document.querySelector("input[name='chiPhi']").value = "";
+    document.querySelector("input[name='loiNhuan']").value = "";
+    document.querySelector("input[name='ghiChu']").value = "";
+  }
+
+  function openEditRevenueModal(
+    ngay,
+    soDonHang,
+    doanhThu,
+    chiPhi,
+    loiNhuan,
+    ghiChu
+  ) {
+    const modal = document.getElementById("revenueModalDay");
+    document.getElementById("oldNgay").value = ngay;
+    document.getElementById("ngay").value = ngay;
+    document.querySelector("input[name='soDonHang']").value = soDonHang;
+    document.querySelector("input[name='doanhThu']").value = doanhThu;
+    document.querySelector("input[name='chiPhi']").value = chiPhi;
+    document.querySelector("input[name='loiNhuan']").value = loiNhuan;
+    document.querySelector("input[name='ghiChu']").value = ghiChu || "";
+    modal.style.display = "block";
+  }
+
+  function openEditRevenueModalProduct(
+    maSanPham,
+    tenSanPham,
+    soLuongBan,
+    donGia,
+    doanhThu,
+    ghiChu
+  ) {
+    const modal = document.getElementById("revenueModalProduct");
+    document.getElementById("oldMaSanPham").value = maSanPham;
+    document.getElementById("maSanPham").value = maSanPham;
+    document.getElementById("tenSanPham").value = tenSanPham;
+    document.getElementById("soLuongBan").value = soLuongBan;
+    document.getElementById("donGia").value = donGia;
+    document.getElementById("doanhThu").value = doanhThu;
+    document.getElementById("ghiChuProduct").value = ghiChu || "";
+
+    modal.style.display = "block";
+  }
+
+  function openEditRevenueModalCustomer(
+    maKhachHang,
+    tenKhachHang,
+    khuVuc,
+    soDonHang,
+    tongTien,
+    ghiChu
+  ) {
+    const modal = document.getElementById("revenueModalCustomer");
+    document.getElementById("oldMaKhachHang").value = maKhachHang;
+    document.getElementById("maKhachHang").value = maKhachHang;
+    document.getElementById("tenKhachHang").value = tenKhachHang;
+    document.getElementById("khuVuc").value = khuVuc;
+    document.getElementById("soDonHangCustomer").value = soDonHang;
+    document.getElementById("tongTien").value = tongTien;
+    document.getElementById("ghiChuCustomer").value = ghiChu || "";
+
+    modal.style.display = "block";
+  }
+
+  function closeRevenueModal() {
+    document
+      .querySelectorAll(".modal")
+      .forEach((m) => (m.style.display = "none"));
+  }
+</script>
+<script>
+  function openRevenueModalProduct() {
+    document.getElementById("revenueModalProduct").style.display = "block";
+    document.getElementById("oldMaSanPham").value = "";
+    document.querySelector("input[name='maSanPham']").value = "";
+    document.querySelector("input[name='tenSanPham']").value = "";
+    document.querySelector("input[name='soLuongBan']").value = "";
+    document.querySelector("input[name='donGia']").value = "";
+    document.querySelector("input[name='doanhThu']").value = "";
+    document.querySelector("input[name='ghiChu']").value = "";
+  }
+
+  function openRevenueModalCustomer() {
+    document.getElementById("revenueModalCustomer").style.display = "block";
+    document.getElementById("oldMaKhachHang").value = "";
+    document.querySelector("input[name='maKhachHang']").value = "";
+    document.querySelector("input[name='tenKhachHang']").value = "";
+    document.querySelector("input[name='khuVuc']").value = "";
+    document.querySelector("input[name='soDonHang']").value = "";
+    document.querySelector("input[name='tongTien']").value = "";
+    document.querySelector("input[name='ghiChu']").value = "";
+  }
+</script>
+
+<!-- Chuyển thành ISO trước khi submit -->
+<script>
+  document.querySelectorAll("form").forEach((form) => {
+    form.addEventListener("submit", function (e) {
+      const ngayInput = this.querySelector("input[name='ngay']");
+      if (ngayInput && ngayInput.value.includes("/")) {
+        const [d, m, y] = ngayInput.value.split("/");
+        ngayInput.value = `${y}-${m}-${d}`; // server sẽ hiểu ISO
+      }
+    });
+  });
+</script>
+<!-- Tiền tệ dạng 1,000,000 VNĐ -->
+<script>
+  function formatCurrency(input) {
+    // Xoá các ký tự không phải số rồi format lại
+    let value = input.value.replace(/[^\d]/g, "");
+    if (!value) return (input.value = "");
+    input.value = parseInt(value).toLocaleString("vi-VN") + " VNĐ";
+  }
+
+  function stripCurrency(value) {
+    return parseFloat(value.replace(/[^\d]/g, "")) || 0;
+  }
+
+  // Trước khi submit: gỡ format để server hiểu
+  document.querySelectorAll("form").forEach((form) => {
+    form.addEventListener("submit", function () {
+      ["doanhThu", "chiPhi", "loiNhuan", "tongTien"].forEach((name) => {
+        const el = this.querySelector(`input[name='${name}']`);
+        if (el) el.value = stripCurrency(el.value);
+      });
+    });
+  });
+</script>
+
+<script>
+  // Optional: convert hidden 'ngay' field on form submit
+  document
+    .querySelectorAll("form[action='/revenues/delete-day']")
+    .forEach((form) => {
+      form.addEventListener("submit", function (e) {
+        const input = this.querySelector("input[name='ngay']");
+        if (input && input.value.includes("-")) {
+          const [day, month, year] = input.value.split("-");
+          input.value = `${year}-${month}-${day}`; // ISO format
+        }
+      });
+    });
+</script>

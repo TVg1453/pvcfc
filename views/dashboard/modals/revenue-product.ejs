@@ -1,0 +1,55 @@
+<!-- Modal revenue by product -->
+<!-- Modal Thêm doanh thu theo sản phẩm -->
+<div id="revenueModalProduct" class="modal">
+  <div class="modal-content">
+    <h3>Doanh thu theo sản phẩm</h3>
+    <form action="/revenues/save-product" method="POST">
+      <input type="hidden" name="oldMaSanPham" id="oldMaSanPham" />
+      <input
+        type="text"
+        name="maSanPham"
+        id="maSanPham"
+        placeholder="Mã sản phẩm"
+        required
+      />
+      <input
+        type="text"
+        name="tenSanPham"
+        id="tenSanPham"
+        placeholder="Tên sản phẩm"
+        required
+      />
+      <input
+        type="number"
+        name="soLuongBan"
+        id="soLuongBan"
+        placeholder="Số lượng bán"
+        required
+      />
+      <input
+        type="number"
+        name="donGia"
+        id="donGia"
+        placeholder="Đơn giá (VNĐ)"
+        required
+      />
+      <input
+        type="number"
+        name="doanhThu"
+        id="doanhThu"
+        placeholder="Doanh thu (VNĐ)"
+        required
+      />
+      <input
+        type="text"
+        name="ghiChu"
+        id="ghiChuProduct"
+        placeholder="Ghi chú"
+      />
+      <div class="actions">
+        <button type="button" onclick="closeRevenueModal()">Huỷ</button>
+        <button type="submit">Lưu</button>
+      </div>
+    </form>
+  </div>
+</div>

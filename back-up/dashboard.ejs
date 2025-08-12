@@ -1,0 +1,2678 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <style>
+      :root {
+        --primary: #4e73df;
+        --secondary: #858796;
+        --success: #1cc88a;
+        --info: #36b9cc;
+        --warning: #f6c23e;
+        --danger: #e74a3b;
+        --light: #f8f9fc;
+        --dark: #5a5c69;
+        --limeGreen: rgb(50, 205, 50);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Nunito", sans-serif;
+      }
+      body {
+        background-color: #f8f9fc;
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 250px;
+        background: linear-gradient(
+          180deg,
+          rgb(0, 128, 0) 0%,
+          rgb(34, 139, 34) 100%
+        );
+        color: white;
+        transition: all 0.3s;
+        position: fixed;
+        height: 100vh;
+        z-index: 100;
+      }
+      .sidebar-header {
+        padding: 1.5rem;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .sidebar-menu {
+        padding: 1rem 0;
+      }
+      .sidebar-menu li {
+        list-style: none;
+        padding: 0.75rem 1.5rem;
+        transition: all 0.3s;
+      }
+      .sidebar-menu li:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      .sidebar-menu li a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+      }
+      .sidebar-menu li a i {
+        margin-right: 10px;
+        font-size: 1.1rem;
+      }
+      .sidebar-menu li.active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      .sidebar-menu li.active a {
+        color: white;
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        margin-left: 250px;
+        transition: all 0.3s;
+      }
+
+      /* Top Navigation */
+      .top-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        background-color: white;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+      .search-bar {
+        display: flex;
+        align-items: center;
+      }
+      .search-bar input {
+        border: none;
+        background-color: var(--light);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        outline: none;
+      }
+      .user-menu {
+        display: flex;
+      }
+      .user-menu img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 2px;
+      }
+      .user-menu .dropdown {
+        position: relative;
+      }
+      .user-menu .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: white;
+        min-width: 160px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        border-radius: 5px;
+      }
+      .user-menu .dropdown:hover .dropdown-content {
+        display: block;
+      }
+      .user-dropdown {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        cursor: pointer;
+      }
+      .user-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid white;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+      }
+      .user-name {
+        font-size: 13px;
+        color: #333;
+        font-weight: 600;
+        margin-top: 4px;
+        white-space: nowrap;
+        max-width: 100px;
+        text-align: center;
+      }
+      .user-dropdown .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background-color: white;
+        min-width: 160px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      .user-dropdown:hover .dropdown-content {
+        display: block;
+      }
+      .dropdown-content a {
+        color: var(--dark);
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+      }
+      .dropdown-content a:hover {
+        background-color: var(--light);
+      }
+
+      /* Dashboard Content */
+      .dashboard-content {
+        padding: 1.5rem;
+      }
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+      .page-header h1 {
+        font-size: 1.75rem;
+        color: var(--dark);
+      }
+      .breadcrumb {
+        display: flex;
+        list-style: none;
+      }
+      .breadcrumb li {
+        margin-right: 0.5rem;
+      }
+      .breadcrumb li:after {
+        content: "/";
+        margin-left: 0.5rem;
+        color: var(--secondary);
+      }
+      .breadcrumb li:last-child:after {
+        content: "";
+      }
+      .breadcrumb a {
+        color: var(--secondary);
+        text-decoration: none;
+      }
+      .breadcrumb a:hover {
+        color: var(--primary);
+      }
+
+      /* Cards */
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .card {
+        background-color: white;
+        border-radius: 0.35rem;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+        overflow: hidden;
+      }
+      .card-header {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        font-weight: bold;
+        color: var(--dark);
+      }
+      .card-body {
+        padding: 1.25rem;
+      }
+      .stat-card {
+        display: flex;
+        align-items: center;
+      }
+      .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1.5rem;
+        color: white;
+      }
+      .stat-icon.primary {
+        background-color: var(--primary);
+      }
+      .stat-icon.success {
+        background-color: var(--success);
+      }
+      .stat-icon.warning {
+        background-color: var(--warning);
+      }
+      .stat-icon.danger {
+        background-color: var(--danger);
+      }
+      .stat-text h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+        color: var(--dark);
+      }
+      .stat-text p {
+        color: var(--secondary);
+        font-size: 0.875rem;
+      }
+
+      /* Charts */
+      .chart-container {
+        background-color: white;
+        border-radius: 0.35rem;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+      }
+      .chart-header {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        font-weight: bold;
+        color: var(--dark);
+      }
+      .chart-body {
+        padding: 1.25rem;
+        height: 300px;
+      }
+
+      /* Tables */
+      .table-container {
+        background-color: white;
+        border-radius: 0.35rem;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(26, 27, 31, 0.196);
+        overflow: hidden;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        border: #dbd9d9 1px solid;
+      }
+      th,
+      td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+      th {
+        background-color: var(--light);
+        color: var(--dark);
+        font-weight: bold;
+      }
+      tr:hover {
+        background-color: rgba(0, 0, 0, 0.01);
+      }
+      .badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: bold;
+        color: white;
+      }
+      .badge-success {
+        background-color: var(--success);
+      }
+      .badge-warning {
+        background-color: var(--warning);
+      }
+      .badge-danger {
+        background-color: var(--danger);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .sidebar {
+          width: 0;
+          overflow: hidden;
+        }
+        .main-content {
+          margin-left: 0;
+        }
+        .cards {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* css table user */
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+      }
+      .table th,
+      .table td {
+        padding: 1rem;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+      }
+      .table th {
+        background: #f9f9f9;
+        color: #333;
+      }
+      .table button {
+        padding: 5px 10px;
+        margin-right: 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .btn-success {
+        background-color: rgb(13, 192, 84);
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .btn-success:hover {
+        cursor: pointer;
+        background-color: rgb(1, 139, 56);
+        transition: 0.3s;
+      }
+      /*User Section*/
+      .user-section .btn-success {
+        background-color: rgb(13, 192, 84);
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .user-section .btn-success:hover {
+        cursor: pointer;
+        background-color: rgb(1, 139, 56);
+        transition: 0.3s;
+      }
+      .user-section .btn-sm {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+      .user-section .btn-primary {
+        background-color: #4e73df;
+        color: white;
+        border: none;
+        margin: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .user-section .btn-danger {
+        background-color: #e74a3b;
+        margin: 5px 10px;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      /*pop-up edit/add user*/
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      .modal-content {
+        background-color: #fff;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 5px;
+        width: 400px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+      .modal-content h3 {
+        margin-bottom: 15px;
+      }
+      .modal-content input {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #dbd9d9;
+      }
+      .modal-content .actions {
+        text-align: right;
+      }
+      .modal-content .actions button {
+        margin-left: 10px;
+        padding: 6px 12px;
+        cursor: pointer;
+      }
+      #userModal label {
+        font-weight: bold;
+        margin-top: 10px;
+        display: block;
+      }
+      #userModal input,
+      #userModal select,
+      #userModal textarea {
+        width: 100%;
+        padding: 8px 10px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+      #userModal textarea {
+        min-height: 60px;
+        resize: vertical;
+      }
+      #userModal .btn-primary {
+        background-color: #28a745;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+      }
+      #userModal .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+      }
+      #userModal .btn-primary:hover {
+        background-color: #1b5e20;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+      #userModal .btn-secondary:hover {
+        background-color: #555;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+      /* Nút chỉnh sửa trong bảng sản phẩm */
+      .product-section .btn-primary {
+        background-color: var(--primary);
+        color: #fff;
+        padding: 6px 12px;
+        font-size: 13px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+      .product-section .btn-primary:hover {
+        background-color: #2e59d9;
+      }
+
+      /* Tìm kiếm trong bảng sản phẩm */
+      .product-search-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 15px 0;
+      }
+      .product-search-bar select,
+      .product-search-bar input {
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        font-size: 14px;
+        outline: none;
+        transition: border 0.2s ease;
+      }
+      .product-search-bar input:focus,
+      .product-search-bar select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 5px rgba(78, 115, 223, 0.3);
+      }
+      .product-search-bar i {
+        color: black;
+        font-size: 16px;
+      }
+      .btn-sm {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        color: #fff;
+        padding: 6px 12px;
+        font-size: 13px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .btn-primary:hover {
+        background-color: #2e59d9;
+        transition: 0.3s ease-in;
+      }
+      .btn-danger {
+        background-color: #e74a3b;
+        color: white;
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .btn-danger:hover {
+        background-color: #c0392b;
+        transition: 0.3s ease-in;
+      }
+      /* Phần doanh thu*/
+      .revenue-tab-buttons {
+        margin: 15px 0;
+        display: flex;
+        gap: 10px;
+      }
+      .revenue-search-bar {
+        margin: 10px 0 20px;
+        display: flex;
+        justify-content: flex-end;
+      }
+      .revenue-search-bar input {
+        padding: 8px 12px;
+        border-radius: 20px;
+        border: 1px solid #ccc;
+        outline: none;
+        font-size: 14px;
+        width: 250px;
+      }
+      /* Phần dark/light mod  */
+      body.dark-mode * {
+        color: #e0e0e0 !important;
+      }
+      body.dark-mode {
+        background-color: #121212;
+      }
+      body.dark-mode .main-content,
+      body.dark-mode .table-container,
+      body.dark-mode .card,
+      body.dark-mode .modal-content,
+      body.dark-mode .chart-container {
+        background-color: #1a1a1a;
+        color: #e0e0e0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        border-radius: 8px;
+      }
+      body.dark-mode .table th,
+      body.dark-mode .table td {
+        border-color: #2e2e2e;
+      }
+      body.dark-mode .top-nav {
+        background-color: #263238;
+        border-bottom: 1px solid #37474f;
+      }
+      body.dark-mode .sidebar {
+        background: linear-gradient(180deg, #2e7d32 0%, #1b5e20 100%);
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+      }
+      body.dark-mode .sidebar-menu li a {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      body.dark-mode .sidebar-menu li a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+      }
+      body.dark-mode .table th {
+        background-color: #263238;
+        color: #ffffff;
+      }
+      body.dark-mode input,
+      body.dark-mode select {
+        background-color: #2c2c2c;
+        color: #ffffff;
+        border: 1px solid #555;
+        padding: 8px;
+        border-radius: 4px;
+      }
+      body.dark-mode input:focus,
+      body.dark-mode select:focus {
+        border-color: #66bb6a;
+        outline: none;
+      }
+      body.dark-mode .dropdown-content {
+        background-color: #1e1e1e;
+        border: 1px solid #333;
+      }
+      body.dark-mode .dropdown-content a {
+        color: #e0e0e0;
+      }
+      body.dark-mode .dropdown-content a:hover {
+        background-color: #2e2e2e;
+      }
+      body.dark-mode .search-bar input {
+        background-color: #2c2c2c;
+        color: #fff;
+        border: 1px solid #444;
+      }
+
+      body.dark-mode .chart-header {
+        background-color: #1e1e1e;
+        color: #fff;
+      }
+
+      body.dark-mode .modal-content .actions button {
+        background-color: #3b3b3b;
+        color: #fff;
+        border: 1px solid #555;
+      }
+      body.dark-mode .modal-content .actions button:hover {
+        background-color: #555;
+      }
+
+      body.dark-mode table tr:hover {
+        background-color: #222;
+      }
+      body.dark-mode .btn {
+        background-color: #2e7d32;
+        border: none;
+        color: white;
+      }
+      body.dark-mode .btn:hover {
+        background-color: #1b5e20;
+      }
+
+      body.dark-mode select,
+      body.dark-mode textarea {
+        background-color: #2c2c2c;
+        color: #fff;
+        border: 1px solid #555;
+      }
+
+      body.dark-mode {
+        background-color: #1a1a1a;
+        color: #e0e0e0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+        border-radius: 8px;
+      }
+
+      body.dark-mode table {
+        background-color: #1e1e2f;
+        color: #e0e0e0;
+      }
+
+      body.dark-mode th {
+        background-color: #263238;
+        color: #ffffff;
+      }
+
+      body.dark-mode td {
+        border-color: #2e2e2e;
+      }
+
+      body.dark-mode .btn-primary {
+        background-color: #3b82f6;
+        color: #fff;
+      }
+
+      body.dark-mode .btn-danger {
+        background-color: #e74c3c;
+        color: #fff;
+      }
+
+      body.dark-mode .btn-primary:hover {
+        background-color: #2563eb;
+      }
+
+      body.dark-mode .btn-danger:hover {
+        background-color: #c0392b;
+      }
+      body.dark-mode input,
+      body.dark-mode select {
+        background-color: #2c2c2c;
+        color: #ffffff;
+        border: 1px solid #555;
+      }
+      body,
+      body * {
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      /* === SETTINGS SECTION STYLE === */
+      #settings-section {
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        margin-top: 20px;
+        overflow-x: auto;
+      }
+      #settings-section h3 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+        text-align: left;
+      }
+
+      #settings-section table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      #settings-section th,
+      #settings-section td {
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+        font-size: 15px;
+      }
+      #settings-section th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+      }
+      #settings-section tr:hover {
+        background-color: #f1f1f1;
+      }
+      #settings-section select,
+      #settings-section input[type="file"] {
+        padding: 6px 10px;
+        font-size: 14px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        margin-right: 6px;
+      }
+      #settings-section .btn {
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      #settings-section .btn-success {
+        background-color: #28a745;
+        color: white;
+        border: none;
+      }
+
+      #settings-section .btn-primary {
+        background-color: #007bff;
+        color: white;
+        border: none;
+      }
+      #settings-section .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+      }
+      #settings-section .btn:hover {
+        opacity: 0.9;
+      }
+      @media screen and (max-width: 768px) {
+        #settings-section table,
+        #settings-section thead,
+        #settings-section tbody,
+        #settings-section th,
+        #settings-section td,
+        #settings-section tr {
+          display: block;
+        }
+
+        #settings-section th {
+          display: none;
+        }
+
+        #settings-section td {
+          position: relative;
+          padding-left: 50%;
+          border: none;
+          border-bottom: 1px solid #ccc;
+        }
+
+        #settings-section td::before {
+          position: absolute;
+          left: 10px;
+          top: 12px;
+          white-space: nowrap;
+          font-weight: bold;
+          content: attr(data-label);
+        }
+      }
+      /* Dark mode hỗ trợ cho settings */
+      body.dark-mode #settings-section {
+        background-color: #1e1e1e;
+        color: #eee;
+      }
+      body.dark-mode #settings-section th {
+        background-color: #2a2a3d;
+        color: #eee;
+      }
+      body.dark-mode #settings-section td {
+        border-color: #3a3a4d;
+      }
+      body.dark-mode #settings-section tr:hover {
+        background-color: #2f2f44;
+      }
+
+      .chart-container {
+        background-color: white;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .chart-container canvas {
+        width: 80% !important;
+        height: 300px !important;
+        display: block;
+        margin: 0 auto;
+      }
+
+      .table-container {
+        background-color: white;
+        padding: 20px;
+        margin-top: 10px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      .custom-select {
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        font-size: 14px;
+        outline: none;
+        appearance: none;
+        width: 100%;
+        margin-bottom: 12px;
+        background-image: url("data:image/svg+xml;utf8,<svg fill='%23666' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 14px;
+        cursor: pointer;
+      }
+      .custom-select:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 5px rgba(78, 115, 223, 0.3);
+      }
+      body.dark-mode .custom-select {
+        background-color: #2c2c2c;
+        color: #fff;
+        border: 1px solid #555;
+      }
+      .revenue-add-buttons {
+        margin: 10px 0 20px;
+        display: flex;
+        gap: 10px;
+      }
+      .revenue-add-buttons .btn {
+        font-size: 14px;
+      }
+      .revenue-control-groups {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin: 10px 0 20px;
+      }
+
+      .revenue-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .btn.tab-btn,
+      .btn.add-btn {
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        border: none;
+        color: white;
+      }
+
+      /* Màu từng nhóm */
+      .btn-day {
+        background-color: #4e73df;
+      }
+      .btn-day:hover {
+        background-color: #3b5fcc;
+        transition: 0.3s;
+      }
+
+      .btn-product {
+        background-color: #1cc88a;
+      }
+      .btn-product:hover {
+        background-color: #17a673;
+        transition: 0.3s;
+      }
+
+      .btn-customer {
+        background-color: #f6c23e;
+        color: black;
+      }
+      .btn-customer:hover {
+        background-color: #d6a933;
+        transition: 0.3s;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2>Bảng quản lý</h2>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="active">
+          <a href="#" id="dashboardBtn"
+            ><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a
+          >
+        </li>
+        <li>
+          <a href="#" id="usersBtn"
+            ><i class="fas fa-fw fa-users"></i> Phân quyền</a
+          >
+        </li>
+        <li>
+          <a href="#" id="productsBtn"
+            ><i class="fas fa-fw fa-box"></i> Sản phẩm</a
+          >
+        </li>
+        <li>
+          <a href="#" id="ordersBtn">
+            <i class="fas fa-fw fa-shopping-cart"></i> Đơn hàng</a
+          >
+        </li>
+        <li>
+          <a href="#" id="revenueBtn"
+            ><i class="fas fa-fw fa-chart-bar"></i> Doanh thu</a
+          >
+        </li>
+        <li>
+          <a href="#" id="settingsBtn"
+            ><i class="fas fa-fw fa-cog"></i> Cài đặt</a
+          >
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Navigation -->
+      <div class="top-nav">
+        <div class="search-bar">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Tìm kiếm..." />
+        </div>
+        <div class="user-menu">
+          <div class="dropdown user-dropdown">
+            <% if (avatar) { %>
+            <img
+              src="/uploads/<%= avatar %>"
+              alt="Avatar"
+              style="
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                object-fit: cover;
+              "
+            />
+            <% } else { %>
+            <img
+              src="/images/default-avatar.png"
+              alt="Avatar"
+              style="
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                object-fit: cover;
+              "
+            />
+            <% } %>
+            <div class="user-name"><%= name %></div>
+
+            <div class="dropdown-content">
+              <a href="/information"
+                ><i class="fas fa-fw fa-user"></i> Trang cá nhân</a
+              >
+              <a href="/login"
+                ><i class="fas fa-fw fa-sign-out-alt"></i> Đăng xuất</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Content -->
+      <div class="dashboard-content">
+        <div class="page-header">
+          <h1>Dashboard</h1>
+          <ul class="breadcrumb">
+            <li><a href="/after_login">Trang chủ</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+          </ul>
+        </div>
+        <!-- Stats Cards -->
+        <div class="cards">
+          <div class="card stat-card">
+            <div class="stat-icon primary">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-text">
+              <h3><%= users.length %></h3>
+              <p>Tổng số người dùng</p>
+            </div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon success">
+              <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="stat-text">
+              <h3><%= orders.length %></h3>
+              <p>Tổng số đơn hàng</p>
+            </div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon warning">
+              <i class="fas fa-box"></i>
+            </div>
+            <div class="stat-text">
+              <h3><%= products.length %></h3>
+              <p>Tổng số sản phẩm</p>
+            </div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon danger">
+              <i class="fa-solid fa-dollar-sign"></i>
+            </div>
+            <div class="stat-text">
+              <h3><%= totalRevenue.toLocaleString() %> đ</h3>
+              <p>Tổng doanh thu</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="chart-container">
+          <div
+            class="chart-header"
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <h3 style="margin: 0">Tổng quan về doanh thu</h3>
+            <select
+              id="revenueChartType"
+              onchange="updateRevenueChart()"
+              style="padding: 5px 10px"
+            >
+              <option value="day">Theo ngày</option>
+              <option value="product">Theo sản phẩm</option>
+              <option value="customer">Theo khách hàng</option>
+            </select>
+          </div>
+          <div class="chart-body">
+            <canvas id="revenueChart" style="max-height: 420px"></canvas>
+          </div>
+        </div>
+
+        <!-- Recent Orders Table -->
+        <div class="table-container">
+          <div class="chart-header">
+            <h3>Đơn hàng gần đây</h3>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Mã đơn hàng</th>
+                <th>Tên khách hàng</th>
+                <th>Ngày mua</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% orders.slice(0, 5).forEach(order => { %>
+              <tr>
+                <td><%= order.maDonHang %></td>
+                <td><%= order.tenKhachHang %></td>
+                <td><%= order.ngayMua %></td>
+                <td><%= order.tongTien.toLocaleString() %> đ</td>
+                <td>
+                  <% if (order.trangThai === "Đã giao") { %>
+                  <span class="badge badge-success">Đã giao</span>
+                  <% } else if (order.trangThai === "Đang giao") { %>
+                  <span class="badge badge-warning">Đang giao</span>
+                  <% } else { %>
+                  <span class="badge badge-danger"><%= order.trangThai %></span>
+                  <% } %>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table User Section -->
+        <div
+          class="table-container user-section"
+          id="users-section"
+          style="display: none"
+        >
+          <div
+            class="chart-header"
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <h3>Người dùng</h3>
+            <button onclick="openAddUserModal()" class="btn btn-success">
+              + Thêm người dùng
+            </button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Họ tên</th>
+                <th>Email</th>
+                <th>Quyền</th>
+                <th>Công ty</th>
+                <th>Phòng ban</th>
+                <th>Chức vụ</th>
+                <th>Trạng thái</th>
+                <th>Cấp độ bảo mật</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% users.forEach(user => { %>
+              <tr>
+                <td><%= user.id %></td>
+                <td><%= user.full_name %></td>
+                <td><%= user.email %></td>
+                <td><%= user.user_type %></td>
+                <td><%= user.company_name || '' %></td>
+                <td><%= user.department || ''%></td>
+                <td><%= user.position ||''%></td>
+                <td><%= user.status ||''%></td>
+                <td><%= user.safety_level ||''%></td>
+                <td>
+                  <button
+                    class="btn btn-sm btn-primary"
+                    onclick="openEditUserModal(
+                      '<%= user.id %>',
+                      '<%= user.full_name %>',
+                      '<%= user.username || '' %>',
+                      '<%= user.email %>',
+                      '<%= user.phone || '' %>',
+                      '<%= user.user_type %>',
+                      '<%= user.company_name || '' %>',
+                      '<%= user.department || '' %>',
+                      '<%= user.position || '' %>',
+                      '<%= user.status || '' %>',
+                      '<%= user.safety_level || '' %>',
+                    )"
+                    title="Chỉnh sửa"
+                  >
+                    Chỉnh sửa
+                  </button>
+                  <form
+                    action="/admin/delete-user"
+                    method="POST"
+                    style="display: inline"
+                  >
+                    <input type="hidden" name="id" value="<%= user.id %>" />
+                    <button
+                      class="btn btn-sm btn-danger"
+                      onclick="return confirm('Xóa người dùng này?')"
+                      title="Xoá"
+                    >
+                      Xóa
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pop-up modal cho Add/Edit -->
+        <div id="userModal" class="modal">
+          <div class="modal-content">
+            <h3 id="modalTitle">Thêm/Chỉnh sửa người dùng</h3>
+            <form id="userForm" action="/admin/save-user" method="POST">
+              <input type="hidden" id="userId" name="id" />
+
+              <label for="userName">Họ tên:</label>
+              <input
+                type="text"
+                id="userName"
+                name="full_name"
+                class="form-control"
+                required
+              />
+
+              <label for="userEmail">Email:</label>
+              <input
+                type="email"
+                id="userEmail"
+                name="email"
+                class="form-control"
+                required
+              />
+
+              <label for="userType">Vai trò:</label>
+              <select
+                id="userType"
+                name="user_type"
+                class="form-control"
+                required
+              >
+                <option value="admin">Admin</option>
+                <option value="contractor">Contractor</option>
+                <option value="visitor">Visitor</option>
+                <option value="hse_staff">HSE Staff</option>
+              </select>
+
+              <label for="userCompany">Ten công ty:</label>
+              <input
+                type="text"
+                id="userCompany"
+                name="company_name"
+                class="form-control"
+              />
+
+              <label for="userDepartment">Phòng ban:</label>
+              <input
+                type="text"
+                id="userDepartment"
+                name="department"
+                class="form-control"
+                required
+              />
+
+              <label for="userPosition">Chức vụ:</label>
+              <input
+                type="text"
+                id="userPosition"
+                name="position"
+                class="form-control"
+              />
+
+              <label for="userStatus">Trạng thái:</label>
+              <select id="userStatus" name="status" class="form-control">
+                <option value="active">Hoạt động</option>
+                <option value="inactive">Không hoạt động</option>
+                <option value="suspended">Tạm khóa</option>
+                <option value="pending_approval">Chờ duyệt</option>
+              </select>
+
+              <label for="userSafety">Mức bảo mật:</label>
+              <select id="userSafety" name="safety_level" class="form-control">
+                <option value="basic">Cơ bản</option>
+                <option value="intermediate">Trung bình</option>
+                <option value="advanced">Nâng cao</option>
+              </select>
+
+              <button type="submit" class="btn btn-primary mt-3">Lưu</button>
+              <button
+                type="button"
+                class="btn btn-secondary mt-3"
+                onclick="closeUserModal()"
+              >
+                Hủy
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Table Products Section-->
+        <div
+          class="table-container product-section"
+          id="products-section"
+          style="display: none"
+        >
+          <div
+            class="chart-header"
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <h3>Sản phẩm</h3>
+            <button class="btn btn-success" onclick="openProductModal()">
+              + Thêm sản phẩm
+            </button>
+          </div>
+          <div class="product-search-bar">
+            <select id="searchType">
+              <option value="MaSP">Mã sản phẩm</option>
+              <option value="TenSanPham">Tên sản phẩm</option>
+              <option value="Gia">Giá</option>
+              <option value="SoLuong">Số lượng</option>
+            </select>
+            <i class="fas fa-search"></i>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Tìm kiếm sản phẩm..."
+            />
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Mã SP</th>
+                <th>Tên sản phẩm</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Đơn vị</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% products.forEach(product => { %>
+              <tr>
+                <td><%= product.MaSP %></td>
+                <td><%= product.TenSanPham %></td>
+                <td><%= product.Gia %></td>
+                <td><%= product.SoLuong %></td>
+                <td><%= product.DonVi %></td>
+                <td>
+                  <form
+                    action="/admin/delete-product"
+                    method="POST"
+                    style="display: inline"
+                  >
+                    <input
+                      type="hidden"
+                      name="MaSP"
+                      value="<%= product.MaSP %>"
+                    />
+                    <button
+                      class="btn btn-sm btn-danger"
+                      onclick="return confirm('Xóa sản phẩm này?')"
+                    >
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Modal thêm sản phẩm -->
+      <div id="productModal" class="modal">
+        <div class="modal-content">
+          <h3 id="productModalTitle">Thêm sản phẩm</h3>
+          <form
+            id="productForm"
+            action="/admin/save-product#products"
+            method="POST"
+          >
+            <input type="hidden" name="oldMaSP" id="oldMaSP" />
+            <input
+              type="text"
+              name="MaSP"
+              id="MaSP"
+              placeholder="Mã sản phẩm"
+              required
+            />
+            <input
+              type="text"
+              name="TenSanPham"
+              id="TenSanPham"
+              placeholder="Tên sản phẩm"
+              required
+            />
+            <input
+              type="number"
+              name="Gia"
+              id="Gia"
+              placeholder="Giá"
+              required
+            />
+            <input
+              type="number"
+              name="SoLuong"
+              id="SoLuong"
+              placeholder="Số lượng"
+              required
+            />
+            <input
+              type="text"
+              name="DonVi"
+              id="DonVi"
+              placeholder="Đơn vị"
+              required
+            />
+            <div class="actions">
+              <button type="button" onclick="closeProductModal()">Hủy</button>
+              <button type="submit">Lưu</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Table Orders Section-->
+      <div
+        class="table-container order-section"
+        id="orders-section"
+        style="display: none"
+      >
+        <div
+          class="chart-header"
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <h3>Đơn hàng</h3>
+          <button class="btn btn-success" onclick="openOrderModal()">
+            + Thêm đơn hàng
+          </button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Mã đơn hàng</th>
+              <th>Tên khách hàng</th>
+              <th>Số điện thoại</th>
+              <th>Email</th>
+              <th>Ngày mua</th>
+              <th>Địa chỉ giao hàng</th>
+              <th>Phương thức thanh toán</th>
+              <th>Tổng tiền hàng</th>
+              <th>Phí vận chuyển</th>
+              <th>Giảm giá</th>
+              <th>Tổng tiền</th>
+              <th>Người xử lý</th>
+              <th>Trạng thái</th>
+              <th>Ngày hoàn thành</th>
+              <th>Ghi chú</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% orders.forEach(order => { %>
+            <tr>
+              <td><%= order.maDonHang %></td>
+              <td><%= order.tenKhachHang %></td>
+              <td><%= order.soDienThoai %></td>
+              <td><%= order.email %></td>
+              <td><%= order.ngayMua %></td>
+              <td><%= order.diaChi %></td>
+              <td><%= order.thanhToan %></td>
+              <td><%= order.tongTienHang.toLocaleString() %> đ</td>
+              <td><%= order.phiVanChuyen.toLocaleString() %> đ</td>
+              <td><%= order.giamGia.toLocaleString() %> đ</td>
+              <td><%= order.tongTien.toLocaleString() %> đ</td>
+              <td><%= order.nguoiXuLy %></td>
+              <td>
+                <% if (order.trangThai === "Đã giao") { %>
+                <span class="badge badge-success">Đã giao</span>
+                <% } else if (order.trangThai === "Đang giao") { %>
+                <span class="badge badge-warning">Đang giao</span>
+                <% } else { %>
+                <span class="badge badge-danger"><%= order.trangThai %></span>
+                <% } %>
+              </td>
+              <td><%= order.ngayHoanThanh %></td>
+              <td><%= order.ghiChu %></td>
+              <td>
+                <button
+                  class="btn btn-sm btn-primary"
+                  onclick="openEditOrderModal(
+                    '<%= order.maDonHang %>',
+                    '<%= order.tenKhachHang %>',
+                    '<%= order.soDienThoai %>',
+                    '<%= order.email %>',
+                    '<%= order.ngayMua %>',
+                    '<%= order.diaChi %>',
+                    '<%= order.thanhToan %>',
+                    '<%= order.tongTienHang %>',
+                    '<%= order.phiVanChuyen %>',
+                    '<%= order.giamGia %>',
+                    '<%= order.tongTien %>',
+                    '<%= order.nguoiXuLy %>',
+                    '<%= order.trangThai %>',
+                    '<%= order.ngayHoanThanh %>',
+                    '<%= order.ghiChu %>'
+                  )"
+                  title="Chỉnh sửa"
+                >
+                  Chỉnh sửa
+                </button>
+                <form
+                  action="/admin/delete-order"
+                  method="POST"
+                  style="display: inline"
+                >
+                  <input
+                    type="hidden"
+                    name="maDonHang"
+                    value="<%= order.maDonHang %>"
+                  />
+                  <button
+                    class="btn btn-sm btn-danger"
+                    onclick="return confirm('Bạn có chắc muốn xóa đơn hàng này?')"
+                    title="Xoá"
+                  >
+                    Xóa
+                  </button>
+                </form>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modal thêm/sửa đơn hàng -->
+      <div id="orderModal" class="modal">
+        <div class="modal-content">
+          <h3 id="orderModalTitle">Thêm đơn hàng</h3>
+          <form action="/admin/save-order" method="POST">
+            <input type="hidden" name="oldMaDonHang" id="oldMaDonHang" />
+            <input
+              type="text"
+              name="maDonHang"
+              placeholder="Mã đơn hàng"
+              required
+            />
+            <input
+              type="text"
+              name="tenKhachHang"
+              placeholder="Tên khách hàng"
+              required
+            />
+            <input type="text" name="soDienThoai" placeholder="Số điện thoại" />
+            <input type="email" name="email" placeholder="Email" />
+            <input type="date" name="ngayMua" />
+            <input type="text" name="diaChi" placeholder="Địa chỉ giao hàng" />
+            <input
+              type="text"
+              name="thanhToan"
+              placeholder="Phương thức thanh toán"
+            />
+            <input
+              type="number"
+              name="tongTienHang"
+              placeholder="Tổng tiền hàng"
+            />
+            <input
+              type="number"
+              name="phiVanChuyen"
+              placeholder="Phí vận chuyển"
+            />
+            <input type="number" name="giamGia" placeholder="Giảm giá" />
+            <input type="number" name="tongTien" placeholder="Tổng tiền" />
+            <input type="text" name="nguoiXuLy" placeholder="Người xử lý" />
+            <input type="text" name="trangThai" placeholder="Trạng thái" />
+            <input type="date" name="ngayHoanThanh" />
+            <input type="text" name="ghiChu" placeholder="Ghi chú" />
+            <div class="actions">
+              <button type="button" onclick="closeOrderModal()">Hủy</button>
+              <button type="submit">Lưu</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Table Revenue Section -->
+      <div class="table-container" id="revenue-section" style="display: none">
+        <div
+          class="chart-header"
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <h3>Doanh thu</h3>
+          <div class="revenue-control-groups">
+            <div class="revenue-group">
+              <button
+                class="btn tab-btn btn-day"
+                onclick="switchRevenueTab('day')"
+              >
+                Theo ngày
+              </button>
+              <button
+                class="btn add-btn btn-day"
+                onclick="openRevenueModalDay()"
+              >
+                + Thêm doanh thu theo ngày
+              </button>
+            </div>
+            <div class="revenue-group">
+              <button
+                class="btn tab-btn btn-product"
+                onclick="switchRevenueTab('product')"
+              >
+                Theo sản phẩm
+              </button>
+              <button
+                class="btn add-btn btn-product"
+                onclick="openRevenueModalProduct()"
+              >
+                + Thêm doanh thu theo sản phẩm
+              </button>
+            </div>
+            <div class="revenue-group">
+              <button
+                class="btn tab-btn btn-customer"
+                onclick="switchRevenueTab('customer')"
+              >
+                Theo khách hàng
+              </button>
+              <button
+                class="btn add-btn btn-customer"
+                onclick="openRevenueModalCustomer()"
+              >
+                + Thêm doanh thu theo khách hàng
+              </button>
+            </div>
+          </div>
+
+          <div class="revenue-search-bar">
+            <input
+              type="text"
+              id="revenueSearchInput"
+              placeholder="Tìm kiếm..."
+              oninput="filterRevenueTable()"
+            />
+          </div>
+        </div>
+
+        <!-- Table doanh thu theo ngày -->
+        <div class="table" id="revenue-day" class="revenue-tab">
+          <table>
+            <thead>
+              <tr>
+                <th>Ngày</th>
+                <th>Số đơn hàng</th>
+                <th>Doanh thu</th>
+                <th>Chi phí</th>
+                <th>Lợi nhuận</th>
+                <th>Ghi chú</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% revenuesByDay.forEach((item) => { %>
+              <tr>
+                <td><%= item.ngay %></td>
+                <td><%= item.soDonHang %></td>
+                <td><%= item.doanhThu.toLocaleString() %>đ</td>
+                <td><%= item.chiPhi.toLocaleString() %>đ</td>
+                <td><%= item.loiNhuan.toLocaleString() %>đ</td>
+                <td><%= item.ghiChu %></td>
+                <td>
+                  <button
+                    class="btn btn-sm btn-primary"
+                    onclick="openEditRevenueModal(
+                      '<%= item.ngay %>',
+                      '<%= item.soDonHang %>',
+                      '<%= item.doanhThu %>',
+                      '<%= item.chiPhi %>',
+                      '<%= item.loiNhuan %>',
+                      '<%= item.ghiChu %>'
+                    )"
+                    title="Chỉnh sửa"
+                  >
+                    Chỉnh sửa
+                  </button>
+                  <form
+                    action="/admin/delete-revenue-day"
+                    method="POST"
+                    style="display: inline"
+                  >
+                    <input type="hidden" name="ngay" value="<%= item.ngay %>" />
+                    <button
+                      class="btn btn-sm btn-danger"
+                      onclick="return confirm('Xóa doanh thu ngày <%= item.ngay %>?')"
+                      title="Xoá"
+                    >
+                      Xóa
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table doanh thu theo sản phẩm -->
+        <div
+          class="table"
+          id="revenue-product"
+          class="revenue-tab"
+          style="display: none"
+        >
+          <table>
+            <thead>
+              <thead>
+                <tr>
+                  <th>Mã sản phẩm</th>
+                  <th>Tên sản phẩm</th>
+                  <th>Số lượng bán</th>
+                  <th>Đơn giá</th>
+                  <th>Doanh thu</th>
+                  <th>Ghi chú</th>
+                </tr>
+              </thead>
+            </thead>
+
+            <tbody>
+              <% revenuesByProduct.forEach((item) => { %>
+              <tr>
+                <td><%= item.maSanPham %></td>
+                <td><%= item.tenSanPham %></td>
+                <td><%= item.soLuongBan %></td>
+                <td>
+                  <%= item.donGia ? item.donGia.toLocaleString() : "0" %>đ
+                </td>
+                <td>
+                  <%= item.doanhThu ? item.doanhThu.toLocaleString() : "0" %>đ
+                </td>
+                <td><%= item.ghiChu %></td>
+                <td>
+                  <button
+                    class="btn btn-sm btn-primary"
+                    onclick="openEditRevenueModal(
+                      '<%= item.maSanPham %>',
+                      '<%= item.tenSanPham %>',
+                      '<%= item.soLuongBan %>',
+                      '<%= item.donGia %>',
+                      '<%= item.doanhThu %>',
+                      '<%= item.ghiChu %>'
+                    )"
+                    title="Chỉnh sửa"
+                  >
+                    Chỉnh sửa
+                  </button>
+                  <form
+                    action="/admin/delete-revenue-product"
+                    method="POST"
+                    style="display: inline"
+                  >
+                    <input
+                      type="hidden"
+                      name="maSanPham"
+                      value="<%= item.maSanPham %>"
+                    />
+                    <button
+                      class="btn btn-sm btn-danger"
+                      onclick="return confirm('Xóa doanh thu sản phẩm <%= item.maSanPham %>?')"
+                      title="Xoá"
+                    >
+                      Xóa
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table doanh thu theo khách hàng -->
+        <div
+          class="table"
+          id="revenue-customer"
+          class="revenue-tab"
+          style="display: none"
+        >
+          <table>
+            <thead>
+              <tr>
+                <th>Mã khách hàng</th>
+                <th>Tên khách hàng</th>
+                <th>Khu vực</th>
+                <th>Số đơn hàng</th>
+                <th>Tổng tiền</th>
+                <th>Ghi chú</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% revenuesByCustomer.forEach((item) => { %>
+              <tr>
+                <td><%= item.maKhachHang %></td>
+                <td><%= item.tenKhachHang %></td>
+                <td><%= item.khuVuc %></td>
+                <td><%= item.soDonHang %></td>
+                <td>
+                  <%= item.tongTien ? item.tongTien.toLocaleString() : "0" %>đ
+                </td>
+                <td><%= item.ghiChu %></td>
+                <td>
+                  <button
+                    class="btn btn-sm btn-primary"
+                    onclick="openEditRevenueModal(
+                      '<%= item.maKhachHang %>',
+                      '<%= item.tenKhachHang %>',
+                      '<%= item.khuVuc %>',
+                      '<%= item.soDonHang %>',
+                      '<%= item.tongTien %>',
+                      '<%= item.ghiChu %>'
+                    )"
+                    title="Chỉnh sửa"
+                  >
+                    Chỉnh sửa
+                  </button>
+                  <form
+                    action="/admin/delete-revenue-customer"
+                    method="POST"
+                    style="display: inline"
+                  >
+                    <input
+                      type="hidden"
+                      name="maKhachHang"
+                      value="<%= item.maKhachHang %>"
+                    />
+                    <button
+                      class="btn btn-sm btn-danger"
+                      onclick="return confirm('Xóa doanh thu khách hàng <%= item.maKhachHang %>?')"
+                      title="Xoá"
+                    >
+                      Xóa
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Table Settings Section -->
+      <div class="table-container" id="settings-section">
+        <div class="chart-header">
+          <h3>Cài đặt hệ thống</h3>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Mục</th>
+              <th>Mô tả</th>
+              <th>Giá trị</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Email hệ thống</td>
+              <td>Email được dùng để gửi mã xác thực & OTP</td>
+              <td><%= process.env.EMAIL_USER || "tvuong1453@gmail.com" %></td>
+              <td>
+                <button
+                  class="btn btn-sm btn-primary"
+                  onclick="alert('Tính năng này cần chỉnh trong file cấu hình server.')"
+                >
+                  Xem
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>Hiệu lực OTP</td>
+              <td>Thời gian mã OTP có hiệu lực (phút)</td>
+              <td>5 phút</td>
+              <td>
+                <button
+                  class="btn btn-sm btn-primary"
+                  onclick="alert('Mặc định 5 phút - cấu hình trong server.js')"
+                >
+                  Cấu hình
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>Số lần gửi lại OTP</td>
+              <td>Tối thiểu 1 phút giữa 2 lần gửi</td>
+              <td>60 giây</td>
+              <td>
+                <button
+                  class="btn btn-sm btn-primary"
+                  onclick="alert('Cố định trong mã nguồn')"
+                >
+                  Xem
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>Dữ liệu hệ thống</td>
+              <td>Tải xuống các file dữ liệu Excel hiện tại</td>
+              <td>product.xlsx, don_hang.xlsx, doanh_thu.xlsx</td>
+              <td>
+                <a href="/download/all" class="btn btn-sm btn-success"
+                  >Tải về</a
+                >
+              </td>
+            </tr>
+            <tr>
+              <td>Khôi phục dữ liệu</td>
+              <td>Import từ file Excel</td>
+              <td></td>
+              <td>
+                <form
+                  action="/admin/import-excel"
+                  method="POST"
+                  enctype="multipart/form-data"
+                >
+                  <select name="type" required>
+                    <option value="users">Người dùng</option>
+                    <option value="products">Sản phẩm</option>
+                    <option value="orders">Đơn hàng</option>
+                    <option value="revenues">Doanh thu</option>
+                  </select>
+                  <input type="file" name="excelFile" accept=".xlsx" required />
+                  <button class="btn btn-sm btn-success" type="submit">
+                    Import
+                  </button>
+                </form>
+              </td>
+            </tr>
+            <tr>
+              <td>Giao diện</td>
+              <td>Đổi giữa chế độ sáng/tối</td>
+              <td id="theme-status">Chế độ sáng</td>
+              <td>
+                <button
+                  class="btn btn-sm btn-secondary"
+                  onclick="toggleTheme()"
+                >
+                  Chuyển
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal Thêm doanh thu theo ngày -->
+    <div id="revenueModalDay" class="modal">
+      <div class="modal-content">
+        <h3>Doanh thu theo ngày</h3>
+        <form action="/admin/save-revenue-day" method="POST">
+          <input type="hidden" name="oldNgay" id="oldNgay" />
+          <input type="date" name="ngay" id="ngay" required />
+          <input
+            type="number"
+            name="soDonHang"
+            placeholder="Số đơn hàng"
+            required
+          />
+          <input
+            type="number"
+            name="doanhThu"
+            placeholder="Doanh thu (VNĐ)"
+            required
+          />
+          <input
+            type="number"
+            name="chiPhi"
+            placeholder="Chi phí (VNĐ)"
+            required
+          />
+          <input
+            type="number"
+            name="loiNhuan"
+            placeholder="Lợi nhuận (VNĐ)"
+            required
+          />
+          <input type="text" name="ghiChu" placeholder="Ghi chú" />
+          <div class="actions">
+            <button type="button" onclick="closeRevenueModal()">Huỷ</button>
+            <button type="submit">Lưu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Thêm doanh thu theo sản phẩm -->
+    <div id="revenueModalProduct" class="modal">
+      <div class="modal-content">
+        <h3>Doanh thu theo sản phẩm</h3>
+        <form action="/admin/save-revenue-product" method="POST">
+          <input type="hidden" name="oldMaSanPham" id="oldMaSanPham" />
+          <input
+            type="text"
+            name="maSanPham"
+            placeholder="Mã sản phẩm"
+            required
+          />
+          <input
+            type="text"
+            name="tenSanPham"
+            placeholder="Tên sản phẩm"
+            required
+          />
+          <input
+            type="number"
+            name="soLuongBan"
+            placeholder="Số lượng bán"
+            required
+          />
+          <input
+            type="number"
+            name="donGia"
+            placeholder="Đơn giá (VNĐ)"
+            required
+          />
+          <input
+            type="number"
+            name="doanhThu"
+            placeholder="Doanh thu (VNĐ)"
+            required
+          />
+          <input type="text" name="ghiChu" placeholder="Ghi chú" />
+          <div class="actions">
+            <button type="button" onclick="closeRevenueModal()">Huỷ</button>
+            <button type="submit">Lưu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Thêm doanh thu theo khách hàng -->
+    <div id="revenueModalCustomer" class="modal">
+      <div class="modal-content">
+        <h3>Doanh thu theo khách hàng</h3>
+        <form action="/admin/save-revenue-customer" method="POST">
+          <input type="hidden" name="oldMaKhachHang" id="oldMaKhachHang" />
+          <input
+            type="text"
+            name="maKhachHang"
+            placeholder="Mã khách hàng"
+            required
+          />
+          <input
+            type="text"
+            name="tenKhachHang"
+            placeholder="Tên khách hàng"
+            required
+          />
+          <input type="text" name="khuVuc" placeholder="Khu vực" required />
+          <input
+            type="number"
+            name="soDonHang"
+            placeholder="Số đơn hàng"
+            required
+          />
+          <input
+            type="number"
+            name="tongTien"
+            placeholder="Tổng tiền (VNĐ)"
+            required
+          />
+          <input type="text" name="ghiChu" placeholder="Ghi chú" />
+          <div class="actions">
+            <button type="button" onclick="closeRevenueModal()">Huỷ</button>
+            <button type="submit">Lưu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const revenuesByDay = <%- JSON.stringify(revenuesByDay || []) %>;
+      const revenuesByProduct = <%- JSON.stringify(revenuesByProduct || []) %>;
+      const revenuesByCustomer = <%- JSON.stringify(revenuesByCustomer || []) %>;
+
+      const revenueCtx = document.getElementById("revenueChart").getContext("2d");
+      let revenueChart;
+
+      function createChart(labels, data, labelName) {
+        if (revenueChart) revenueChart.destroy();
+        revenueChart = new Chart(revenueCtx, {
+          type: "line",
+          data: {
+            labels: labels,
+            datasets: [{
+              label: labelName,
+              data: data,
+              borderColor: "rgba(54, 162, 235, 1)",
+              backgroundColor: "rgba(54, 162, 235, 0.2)",
+              tension: 0.4,
+              fill: true,
+              pointRadius: 3
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: true }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: {
+                  callback: function(value) {
+                    return value.toLocaleString() + ' đ';
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+
+      function updateRevenueChart() {
+        const type = document.getElementById("revenueChartType").value;
+
+        if (type === "day") {
+          const recent = revenuesByDay.slice(-30);
+          const labels = revenuesByDay.map(r => r.ngay);
+          const data = revenuesByDay.map(r => r.doanhThu || 0);
+          createChart(labels, data, "Doanh thu theo ngày");
+
+        } else if (type === "product") {
+          const labels = revenuesByProduct.map(r => r.tenSanPham);
+          const data = revenuesByProduct.map(r => r.doanhThu || 0);
+          createChart(labels, data, "Doanh thu theo sản phẩm");
+
+        } else if (type === "customer") {
+          const labels = revenuesByCustomer.map(r => r.tenKhachHang);
+          const data = revenuesByCustomer.map(r => r.tongTien || 0);
+          createChart(labels, data, "Doanh thu theo khách hàng");
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", updateRevenueChart);
+    </script>
+
+    <!-- Ẩn tất cả các section -->
+    <script>
+      function hideAllSections() {
+        document.querySelector(".cards").style.display = "none";
+        document.querySelector(".chart-container").style.display = "none";
+        document
+          .querySelectorAll(
+            ".table-container, .user-section, .product-section, #orders-section, #revenue-section, #settings-section"
+          )
+          .forEach((el) => (el.style.display = "none"));
+      }
+
+      // Đặt active cho sidebar
+      function setActive(btnId) {
+        document.querySelectorAll(".sidebar-menu li").forEach((li) => {
+          li.classList.remove("active");
+        });
+        const btn = document.getElementById(btnId);
+        if (btn) btn.parentElement.classList.add("active");
+      }
+
+      // Hiển thị section
+      function showSection(btnId, sectionId) {
+        document.getElementById(btnId)?.addEventListener("click", (e) => {
+          e.preventDefault();
+          setActive(btnId);
+          hideAllSections();
+
+          if (sectionId === "dashboard") {
+            document.querySelector(".cards").style.display = "grid";
+            document.querySelector(".chart-container").style.display = "block";
+          } else {
+            document.getElementById(sectionId).style.display = "block";
+          }
+        });
+      }
+
+      // Gắn sự kiện cho các nút
+      showSection("dashboardBtn", "dashboard");
+      showSection("usersBtn", "users-section");
+      showSection("productsBtn", "products-section");
+      showSection("ordersBtn", "orders-section");
+      showSection("revenueBtn", "revenue-section");
+      showSection("settingsBtn", "settings-section");
+
+      // Giữ tab sau reload bằng hash
+      window.addEventListener("DOMContentLoaded", () => {
+        const hash = window.location.hash;
+        if (hash === "#users") document.getElementById("usersBtn").click();
+        else if (hash === "#products")
+          document.getElementById("productsBtn").click();
+        else document.getElementById("dashboardBtn").click();
+      });
+
+      // Chuyển tab doanh thu
+      function switchRevenueTab(tab) {
+        const tabs = ["day", "product", "customer"];
+        tabs.forEach((t) => {
+          document.getElementById("revenue-" + t).style.display =
+            t === tab ? "block" : "none";
+        });
+      }
+
+      // Dark / Light mode
+      function toggleTheme() {
+        const body = document.body;
+        const isDark = body.classList.toggle("dark-mode");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+        document.getElementById("theme-status").innerText = isDark
+          ? "Chế độ tối"
+          : "Chế độ sáng";
+      }
+
+      // Giao diện tối mặc định nếu đã chọn
+      window.addEventListener("DOMContentLoaded", () => {
+        const theme = localStorage.getItem("theme");
+        if (theme === "dark") {
+          document.body.classList.add("dark-mode");
+          document.getElementById("theme-status").innerText = "Chế độ tối";
+        }
+      });
+    </script>
+
+    <!-- Script để chuyển đổi tab -->
+    <script>
+      function switchRevenueTab(tab) {
+        const tabs = ["day", "product", "customer"];
+        tabs.forEach((t) => {
+          document.getElementById("revenue-" + t).style.display =
+            t === tab ? "block" : "none";
+        });
+      }
+    </script>
+
+    <!-- Pop-up phần Add User và Edit User -->
+    <script>
+      function openAddUserModal() {
+        document.getElementById("modalTitle").textContent = "Thêm người dùng";
+        document.getElementById("userForm").reset();
+        document.getElementById("userId").value = "";
+        document.getElementById("userName").value = "";
+        document.getElementById("userEmail").value = "";
+        document.getElementById("userType").value = "visitor";
+        document.getElementById("userCompany").value = "";
+        document.getElementById("userDepartment").value = "";
+        document.getElementById("userPosition").value = "";
+        document.getElementById("userStatus").value = "pending_approval";
+        document.getElementById("userSafety").value = "basic";
+
+        document.getElementById("userModal").style.display = "block";
+      }
+
+      function openEditUserModal(
+        id,
+        fullName,
+        username,
+        email,
+        phone,
+        userType,
+        company,
+        department,
+        position,
+        status,
+        safety,
+        notes
+      ) {
+        document.getElementById("modalTitle").textContent =
+          "Chỉnh sửa người dùng";
+        document.getElementById("userId").value = id;
+        document.getElementById("userName").value = fullName;
+        document.getElementById("userEmail").value = email;
+        document.getElementById("userType").value = userType;
+        document.getElementById("userCompany").value = company;
+        document.getElementById("userDepartment").value = department;
+        document.getElementById("userPosition").value = position;
+        document.getElementById("userStatus").value = status;
+        document.getElementById("userSafety").value = safety;
+
+        document.getElementById("userModal").style.display = "block";
+      }
+
+      function closeUserModal() {
+        document.getElementById("userModal").style.display = "none";
+      }
+    </script>
+
+    <!-- Form chỉnh sửa sản phẩm -->
+    <script>
+      function closeProductModal() {
+        document.getElementById("productModal").style.display = "none";
+      }
+      function openEditProductModal(ma, ten, gia, sl, donvi) {
+        document.getElementById("productModalTitle").textContent =
+          "Chỉnh sửa sản phẩm";
+        document.getElementById("oldMaSP").value = ma;
+        document.getElementById("MaSP").value = ma;
+        document.getElementById("TenSanPham").value = ten;
+        document.getElementById("Gia").value = gia;
+        document.getElementById("SoLuong").value = sl;
+        document.getElementById("DonVi").value = donvi;
+        document.getElementById("productModal").style.display = "block";
+      }
+      if (window.location.hash === "#products") {
+        document.getElementById("productsBtn").click();
+      } else if (window.location.hash === "#users") {
+        document.getElementById("usersBtn").click();
+      }
+      // Dữ liệu sản phẩm được render từ server
+      const allProducts = JSON.parse("<%- JSON.stringify(products || []) %>");
+
+      function filterProductTable() {
+        const keyword = document
+          .getElementById("searchInputProduct")
+          .value.toLowerCase();
+        const type = document.getElementById("searchType").value;
+
+        const filtered = allProducts.filter((p) => {
+          const value = (p[type] || "").toString().toLowerCase();
+          return value.includes(keyword);
+        });
+
+        // Tạo HTML cho kết quả
+        const html = filtered
+          .map((p) => {
+            return `
+              <tr>
+                <td>${p.MaSP}</td>
+                <td>${p.TenSanPham}</td>
+                <td>${p.Gia.toLocaleString()} đ</td>
+                <td>${p.SoLuong}</td>
+                <td>${p.DonVi}</td>
+              </tr>
+            `;
+          })
+          .join("");
+
+        document.getElementById("productTableBody").innerHTML = html;
+      }
+    </script>
+
+    <!-- Chức năng tìm kiếm sản phẩm -->
+    <script>
+        const allProducts = <%- JSON.stringify(products) %>; // từ server
+        const tableBody = document.querySelector("#products-section tbody");
+        const searchInput = document.getElementById("searchInput");
+        const searchType = document.getElementById("searchType");
+
+        function renderProducts(products) {
+        tableBody.innerHTML = "";
+        products.forEach((item) => {
+        const row = `
+          <tr>
+            <td>${item.MaSP}</td>
+            <td>${item.TenSanPham}</td>
+            <td>${item.Gia}</td>
+            <td>${item.SoLuong}</td>
+            <td>${item.DonVi}</td>
+            <td>
+              <button class="btn btn-sm btn-primary" onclick="openEditProductModal('${item.MaSP}')">Chỉnh sửa</button>
+              <form action="/admin/delete-product" method="POST" style="display:inline;" onsubmit="return confirm('Xóa sản phẩm này?')">
+               <input type="hidden" name="MaSP" value="${item.MaSP}" />
+               <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+              </form>
+            </td>
+          </tr>`;
+        tableBody.innerHTML += row;
+        });
+      }
+
+        searchInput.addEventListener("input", () => {
+          const type = searchType.value;
+          const keyword = searchInput.value.toLowerCase().trim();
+          const filtered = allProducts.filter(p =>
+            String(p[type]).toLowerCase().includes(keyword)
+          );
+          renderProducts(filtered);
+        });
+
+        // Gọi lần đầu để render tất cả
+        renderProducts(allProducts);
+    </script>
+
+    <!-- Bấm “Hủy” thì tắt form sản phẩm, hiển thị lại tab sản phẩm -->
+    <script>
+      function closeProductModal() {
+        document.getElementById("productModal").style.display = "none";
+        document.getElementById("products-section").style.display = "block";
+      }
+
+      function openProductModal() {
+        document.getElementById("productModal").style.display = "block";
+        document.getElementById("products-section").style.display = "none";
+        // Xoá dữ liệu cũ nếu có
+        document.getElementById("productForm").reset();
+        document.getElementById("oldMaSP").value = "";
+      }
+    </script>
+
+    <!-- Bấm “Chỉnh sửa” thì hiện form, load đúng dữ liệu sản phẩm -->
+    <script>
+      function openEditProductModal(maSP) {
+        const product = allProducts.find((p) => p.MaSP === maSP);
+        if (!product) return;
+
+        openProductModal(); // dùng hàm mở form ở trên
+
+        document.getElementById("MaSP").value = product.MaSP;
+        document.getElementById("TenSanPham").value = product.TenSanPham;
+        document.getElementById("Gia").value = product.Gia;
+        document.getElementById("SoLuong").value = product.SoLuong;
+        document.getElementById("DonVi").value = product.DonVi;
+        document.getElementById("oldMaSP").value = product.MaSP;
+      }
+    </script>
+
+    <!-- Thanh tìm kiếm trong doanh thu-->
+    <script>
+      function filterRevenueTable() {
+        const keyword = document
+          .getElementById("revenueSearchInput")
+          .value.toLowerCase();
+        const currentTab = document.querySelector(
+          ".revenue-tab:not([style*='display: none'])"
+        );
+        const rows = currentTab.querySelectorAll("tbody tr");
+
+        rows.forEach((row) => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(keyword) ? "table-row" : "none";
+        });
+      }
+    </script>
+
+    <!-- Thêm/ sửa đơn hàng -->
+    <script>
+      function openOrderModal() {
+        document.getElementById("orderModalTitle").innerText = "Thêm đơn hàng";
+        document.getElementById("orderModal").style.display = "block";
+        document.querySelector("#orderModal form").reset();
+        document.getElementById("oldMaDonHang").value = "";
+      }
+      function openEditOrderModal(
+        maDonHang,
+        tenKhachHang,
+        soDienThoai,
+        email,
+        ngayMua,
+        diaChi,
+        thanhToan,
+        tongTienHang,
+        phiVanChuyen,
+        giamGia,
+        tongTien,
+        nguoiXuLy,
+        trangThai,
+        ngayHoanThanh,
+        ghiChu
+      ) {
+        document.getElementById("orderModalTitle").innerText =
+          "Chỉnh sửa đơn hàng";
+        document.getElementById("orderModal").style.display = "block";
+
+        const form = document.querySelector("#orderModal form");
+        form.oldMaDonHang.value = maDonHang;
+        form.maDonHang.value = maDonHang;
+        form.tenKhachHang.value = tenKhachHang;
+        form.soDienThoai.value = soDienThoai;
+        form.email.value = email;
+        form.ngayMua.value = ngayMua;
+        form.diaChi.value = diaChi;
+        form.thanhToan.value = thanhToan;
+        form.tongTienHang.value = tongTienHang;
+        form.phiVanChuyen.value = phiVanChuyen;
+        form.giamGia.value = giamGia;
+        form.tongTien.value = tongTien;
+        form.nguoiXuLy.value = nguoiXuLy;
+        form.trangThai.value = trangThai;
+        form.ngayHoanThanh.value = ngayHoanThanh;
+        form.ghiChu.value = ghiChu;
+      }
+      function closeOrderModal() {
+        document.getElementById("orderModal").style.display = "none";
+      }
+
+      window.onclick = function (event) {
+        const modal = document.getElementById("orderModal");
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+    <script>
+      window.addEventListener("load", () => {
+        const hash = window.location.hash;
+        if (hash === "#orders") {
+          document.getElementById("orders-section").style.display = "block";
+          document.getElementById("products-section").style.display = "none";
+          document.getElementById("users-section")?.style.display = "none";
+          document.getElementById("revenue-section").style.display = "none";
+        }
+      });
+    </script>
+    <!-- Preview ảnh và cập nhật avatar vào dashboard -->
+    <script>
+      const fileInput = document.getElementById("avatarInput");
+      const avatarPreview = document.getElementById("avatarPreview");
+      const croppedAvatarInput = document.getElementById("croppedAvatar");
+
+      fileInput.addEventListener("change", function () {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            avatarPreview.src = e.target.result;
+            avatarPreview.style.display = "block";
+            croppedAvatarInput.value = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    </script>
+    <!-- Thêm/ sửa doanh thu -->
+    <script>
+      function closeRevenueModal() {
+        document
+          .querySelectorAll(".modal")
+          .forEach((m) => (m.style.display = "none"));
+      }
+
+      function openRevenueModalDay() {
+        document.getElementById("revenueModalDay").style.display = "block";
+        document.getElementById("oldNgay").value = "";
+        document.getElementById("ngay").value = "";
+      }
+
+      function openEditRevenueModal(
+        ngay,
+        soDonHang,
+        doanhThu,
+        chiPhi,
+        loiNhuan,
+        ghiChu
+      ) {
+        document.getElementById("revenueModalDay").style.display = "block";
+        document.getElementById("oldNgay").value = ngay;
+        document.getElementById("ngay").value = ngay;
+        document.querySelector("input[name='soDonHang']").value = soDonHang;
+        document.querySelector("input[name='doanhThu']").value = doanhThu;
+        document.querySelector("input[name='chiPhi']").value = chiPhi;
+        document.querySelector("input[name='loiNhuan']").value = loiNhuan;
+        document.querySelector("input[name='ghiChu']").value = ghiChu;
+      }
+
+      function openRevenueModalProduct() {
+        document.getElementById("revenueModalProduct").style.display = "block";
+        document.getElementById("oldMaSanPham").value = "";
+      }
+
+      function openRevenueModalCustomer() {
+        document.getElementById("revenueModalCustomer").style.display = "block";
+        document.getElementById("oldMaKhachHang").value = "";
+      }
+    </script>
+    <!-- Chuyển thành ISO trước khi submit -->
+    <script>
+      document.querySelectorAll("form").forEach((form) => {
+        form.addEventListener("submit", function (e) {
+          const ngayInput = this.querySelector("input[name='ngay']");
+          if (ngayInput && ngayInput.value.includes("/")) {
+            const [d, m, y] = ngayInput.value.split("/");
+            ngayInput.value = `${y}-${m}-${d}`; // server sẽ hiểu ISO
+          }
+        });
+      });
+    </script>
+    <!-- Tiền tệ dạng 1,000,000 VNĐ -->
+    <script>
+      function formatCurrency(input) {
+        // Xoá các ký tự không phải số rồi format lại
+        let value = input.value.replace(/[^\d]/g, "");
+        if (!value) return (input.value = "");
+        input.value = parseInt(value).toLocaleString("vi-VN") + " VNĐ";
+      }
+
+      function stripCurrency(value) {
+        return parseFloat(value.replace(/[^\d]/g, "")) || 0;
+      }
+
+      // Auto-format khi nhập
+      document
+        .querySelectorAll(
+          "input[name='doanhThu'], input[name='chiPhi'], input[name='loiNhuan'], input[name='tongTien']"
+        )
+        .forEach((input) => {
+          input.addEventListener("input", () => formatCurrency(input));
+        });
+
+      // Trước khi submit: gỡ format để server hiểu
+      document.querySelectorAll("form").forEach((form) => {
+        form.addEventListener("submit", function () {
+          ["doanhThu", "chiPhi", "loiNhuan", "tongTien"].forEach((name) => {
+            const el = this.querySelector(`input[name='${name}']`);
+            if (el) el.value = stripCurrency(el.value);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

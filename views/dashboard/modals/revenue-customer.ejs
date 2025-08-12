@@ -1,0 +1,55 @@
+<!-- Modal revenue by customer -->
+<!-- Modal Thêm doanh thu theo khách hàng -->
+<div id="revenueModalCustomer" class="modal">
+  <div class="modal-content">
+    <h3>Doanh thu theo khách hàng</h3>
+    <form action="/revenues/save-customer" method="POST">
+      <input type="hidden" name="oldMaKhachHang" id="oldMaKhachHang" />
+      <input
+        type="text"
+        name="maKhachHang"
+        id="maKhachHang"
+        placeholder="Mã khách hàng"
+        required
+      />
+      <input
+        type="text"
+        name="tenKhachHang"
+        id="tenKhachHang"
+        placeholder="Tên khách hàng"
+        required
+      />
+      <input
+        type="text"
+        name="khuVuc"
+        id="khuVuc"
+        placeholder="Khu vực"
+        required
+      />
+      <input
+        type="number"
+        name="soDonHang"
+        id="soDonHangCustomer"
+        placeholder="Số đơn hàng"
+        required
+      />
+      <input
+        type="number"
+        name="tongTien"
+        id="tongTien"
+        placeholder="Tổng tiền (VNĐ)"
+        required
+      />
+      <input
+        type="text"
+        name="ghiChu"
+        id="ghiChuCustomer"
+        placeholder="Ghi chú"
+      />
+      <div class="actions">
+        <button type="button" onclick="closeRevenueModal()">Huỷ</button>
+        <button type="submit">Lưu</button>
+      </div>
+    </form>
+  </div>
+</div>
